@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta 
+    http-equiv="Content-Security-Policy" 
+    content="
+      default-src 'self'; 
+      img-src 'self' data:; 
+      script-src 'self'; 
+      style-src 'self' 'unsafe-inline';
+    "
+  >
+  <title>Cadastro de Turma</title>
+  <link rel="stylesheet" href="../public/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../public/css/addClassroom.css">
+  <link rel="stylesheet" href="../public/bootstrap-icons/bootstrap-icons.css">
+</head>
+<body>
+  <div class="container-fluid p-3 vh-100">
+    <form id="form-add-classroom">
+      <div class="card mb-2">
+        <div class="card-header text-center">
+          <h1>Cadastro de Turma</h1>
+        </div>
+        <div class="card-body">
+          <div class="container-fluid d-flex flex-column gap-2">
+            <div class="row">
+              <div class="form-floating mb-1 col">
+                <input 
+                  type="number" 
+                  class="form-control" 
+                  id="classroom-number"
+                  placeholder=""
+                  required
+                />
+                <label for="classroom-number" class="form-label ms-2 fw-bold">
+                  Turma
+                </label>
+              </div>
+              <div class="form-floating mb-1 col">
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="monitor"
+                  placeholder="" 
+                  required
+                />
+                <label for="functional-name" class="form-label ms-2 fw-bold">
+                  Monitor
+                </label>
+              </div>
+            </div>
+            <div id="alert" class="border pt-2">
+            </div>
+          </div>
+        </div>
+        <div class="card-footer text-center">
+          <button type="submit" class="btn btn-secondary">Cadastrar</button>
+        </div>
+      </div> 
+    </form>
+  </div>
+  <script src="../public/js/bootstrap.bundle.min.js"></script>
+  <script src="./rendererFormClassroom.js"></script>
+</body>
+</html>

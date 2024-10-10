@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta 
+    http-equiv="Content-Security-Policy" 
+    content="default-src 'self'; script-src 'self'"
+  >
+  <title>Home</title>
+  <link rel="stylesheet" href="../public/css/bootstrap.min.css">
+  <!-- <link rel="stylesheet" href="../public/css/index.css"> -->
+</head>
+<body>
+  <div class="container-fluid p-3 vh-100">
+    <div class="card h-100">
+      <div class="card-header text-center">
+        <h1>P1Emulator</h1>
+      </div>
+      <div class="card-body">
+        <div class="container-fluid d-flex flex-column gap-2">
+          <button 
+            type="button" 
+            id="btn-add-classroom" 
+            class="btn btn-secondary"
+          >
+            Cadastrar Turma
+          </button>
+          <button 
+            type="button" 
+            id="btn-search-classroom" 
+            class="btn btn-secondary"
+          >
+            Pesquisar Turma
+          </button>
+          <button 
+            type="button" 
+            class="btn btn-secondary" 
+            id="btn-add-military"
+          >
+            Cadastrar Militar
+          </button>
+          <button 
+            type="button" 
+            id="btn-search-military" 
+            class="btn btn-secondary"
+          >
+            Pesquisar Militar
+          </button>
+          
+          <button type="button" class="btn btn-secondary">
+            Atividade
+          </button>
+        </div>
+      </div>
+      <div class="card-footer text-end">
+        Desenvolvido por Ramon Giovanelli.
+      </div>
+    </div> 
+  </div>
+  
+  <script src="../public/js/bootstrap.min.js"></script>
+  <script src="./renderer.js" defer></script>
+</body>
+</html>

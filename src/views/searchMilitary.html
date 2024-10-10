@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta 
+    http-equiv="Content-Security-Policy" 
+    content="
+      default-src 'self'; 
+      img-src 'self' data:; 
+      script-src 'self'; 
+      style-src 'self' 'unsafe-inline';
+    "
+  >
+  <title>Pesquisa de Militar</title>
+  
+  <link rel="stylesheet" href="../public/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../public/css/searchMilitary.css">
+  <link rel="stylesheet" href="../public/bootstrap-icons/bootstrap-icons.css">
+
+</head>
+<body>
+  <div class="container-fluid p-3 vh-100">
+
+    <div class="card mb-2">
+      <div class="card-header text-center">
+        <h1>Pesquisa de Militar</h1>
+      </div>
+      <div class="card-body">
+        <!-- engloba o form e a table -->
+        <div class="container-fluid d-flex flex-column gap-2">
+          <form id="form-search">
+            <!-- Simple Search -->
+            <div class="row d-flex flex-row justify-content-center">
+              <div class="d-flex justify-content-start gap-1" id="div-radios">
+                <input 
+                  type="radio" 
+                  class="btn-check" 
+                  name="options" 
+                  id="radio-military-number" 
+                />
+                <label 
+                  class="btn btn-outline-secondary" 
+                  for="radio-military-number"
+                >
+                  Matrícula
+                </label>
+                <input 
+                  type="radio" 
+                  class="btn-check" 
+                  name="options" 
+                  id="radio-name" 
+                />
+                <label 
+                  class="btn btn-outline-secondary" 
+                  for="radio-name"
+                >
+                  Nome
+                </label>
+                <input 
+                  type="radio" 
+                  class="btn-check" 
+                  name="options" 
+                  id="radio-functional-name" 
+                />
+                <label 
+                  class="btn btn-outline-secondary" 
+                  for="radio-functional-name"
+                >
+                  Nome Funcional
+                </label>
+              </div>
+              <div class="d-flex justify-content-start" id="div-search">
+                <input 
+                  type="text" 
+                  class="form-control"
+                  id="input-search" 
+                  placeholder="Pesquisa..."
+                />
+              </div>
+            </div>
+            <!-- Accordion Advanced Search -->
+            <div class="row d-flex flex-row justify-content-center mt-2">
+              <div class="accordion" id="advanced-search">
+                <div class="accordion-item">
+                  <h2 class="accordion-header">
+                    <button 
+                      class="accordion-button collapsed" 
+                      type="button" 
+                      data-bs-toggle="collapse" 
+                      data-bs-target="#collapseOne" 
+                      aria-expanded="false" 
+                      aria-controls="collapseOne"
+                    >
+                      Pesquisa Avançada
+                    </button>
+                  </h2>
+                  <div 
+                    id="collapseOne" 
+                    class="accordion-collapse collapse" 
+                    aria-labelledby="headingOne" 
+                    data-bs-parent="#advanced-search"
+                  >
+                    <div class="accordion-body">
+                      <div class="row gap-1">
+                        <div class="form-floating mb-1 col">
+                          <input 
+                            type="text" 
+                            class="form-control" 
+                            id="rpm-origin"
+                            placeholder="" 
+                          />
+                          <label 
+                            for="rpm-origin" 
+                            class="form-label ms-2 fw-bold"
+                          >
+                            RPM Origem
+                          </label>
+                        </div>
+                        <div class="form-floating mb-1 col">
+                          <input 
+                            type="text" 
+                            class="form-control" 
+                            id="unit-origin"
+                            placeholder="" 
+                          />
+                          <label 
+                            for="unit-origin" 
+                            class="form-label ms-2 fw-bold"
+                          >
+                            Unidade Origem
+                          </label>
+                        </div>
+                        <div class="form-floating mb-1 col">
+                          <input 
+                            type="text" 
+                            class="form-control" 
+                            id="company-origin"
+                            placeholder="" 
+                          />
+                          <label 
+                            for="company-origin" 
+                            class="form-label ms-2 fw-bold"
+                          >
+                            Companhia Origem
+                          </label>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="form-floating mb-1 col">
+                          <select class="form-select" id="classroom-number">
+                            <option value=""></option>
+                          </select>
+                          <label 
+                            for="classroom-number" 
+                            class="form-label ms-2 fw-bold"
+                          >
+                            Turma
+                          </label>
+                        </div>
+                        <div class="form-floating mb-1 col">
+                          <select class="form-select" id="rank">
+                            <option value="" default></option>
+                            <option value="soldado">Soldado</option>
+                            <option value="cabo">Cabo</option>
+                          </select>
+                          <label for="rank" class="form-label ms-2 fw-bold">
+                            Graduação
+                          </label>
+                        </div>
+                        <div class="form-floating mb-1 col">
+                          <select class="form-select" id="role">
+                            <option value=""></option>
+                            <option value="sem_funcao">Sem Função</option>
+                            <option value="p1">P1</option>
+                            <option value="p2">P2</option>
+                            <option value="p3">P3</option>
+                            <option value="p4">P4</option>
+                            <option value="auxiliar_p4">Auxiliar de P4</option>
+                            <option value="p5">P5</option>
+                            <option value="tca">TCA</option>
+                          </select>
+                          <label for="role" class="form-label ms-2 fw-bold">
+                            Função de Turma
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- row do botão pesquisar -->
+            <div class="row justify-content-center mt-3">
+              <button type="submit" class="btn btn-secondary col-3">
+                Pesquisar
+              </button>
+            </div>
+          </form>
+          <div class="row d-flex justify-content-end">
+            <button 
+              type="button"
+              id="btn-refresh" 
+              class="btn btn-outline-secondary d-flex justify-content-center align-items-center fw-bold col-2"
+            >
+              <!-- <i class="bi bi-arrow-clockwise" id="icon-refresh"></i> -->
+              <!-- <i class="bi bi-arrow-repeat fs-4" id="icon-refresh"></i> -->
+              <i class="bi bi-arrow-counterclockwise fs-4" id="icon-refresh"></i>
+            </button>
+          </div>
+          <!-- Table Result -->
+          <div class="row d-flex flex-row justify-content-center">
+            <div class="border rounded" id="search-table">
+              <table class="table table-sm table-bordered">
+                <thead class="border">
+                  <tr class="text-center border">
+                    <th scope="col" class="bg-secondary text-white">Turma</th>
+                    <th scope="col" class="bg-secondary text-white">
+                      Matrícula
+                    </th>
+                    <th scope="col" class="bg-secondary text-white">
+                      Nome Funcional
+                    </th>
+                    <th scope="col" class="bg-secondary text-white">Nome</th>
+                    <th scope="col" class="bg-secondary text-white">
+                      Graduação
+                    </th>
+                    <th scope="col" class="bg-secondary text-white">Função</th>
+                    <th scope="col" class="bg-secondary text-white">Ficha</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer text-center">
+        <button class="btn btn-secondary" id="prevButton" disabled>
+          Previous
+        </button>
+        <button class="btn btn-secondary" id="nextButton">Next</button>
+      </div>
+    </div>
+  </div>
+  <script src="../public/js/bootstrap.bundle.min.js"></script>
+  <script src="./rendererSearchMilitary.js" defer></script>
+</body>
+</html>

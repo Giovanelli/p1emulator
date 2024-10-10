@@ -1,0 +1,19 @@
+{
+  "name": "p1emulator",
+  "version": "1.0.0",
+  "description": "crud de alunos CFS e gerador de escalas de serviço",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "author": "Ramon Giovanelli",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^32.0.1",
+    "electron-rebuild": "^3.2.9"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.2.1"
+  }
+}

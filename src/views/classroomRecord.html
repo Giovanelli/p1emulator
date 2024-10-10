@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta 
+    http-equiv="Content-Security-Policy" 
+    content="
+      default-src 'self'; 
+      img-src 'self' data:; 
+      script-src 'self'; 
+      style-src 'self' 'unsafe-inline';
+    "
+  >
+  <title>Registro de Turma</title>
+  <link rel="stylesheet" href="../public/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../public/css/classroomRecord.css">
+  <link rel="stylesheet" href="../public/bootstrap-icons/bootstrap-icons.css">
+</head>
+<body>
+  <div class="container-fluid p-3 vh-100">
+    <form id="form-add-classroom">
+      <div class="card mb-2">
+        <div class="card-header text-center">
+          <h1 id="header">Registro de Turma</h1>
+        </div>
+        <div class="card-body">
+          <div class="container-fluid d-flex flex-column gap-2">
+            <div class="row">
+              <div class="form-floating mb-1 col">
+                <input 
+                  type="number" 
+                  class="form-control" 
+                  id="classroom-number"
+                  placeholder=""
+                  disabled
+                />
+                <label for="classroom-number" class="form-label ms-2 fw-bold">
+                  Turma
+                </label>
+              </div>
+              <div class="form-floating mb-1 col">
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="number-of-military"
+                  placeholder="" 
+                  disabled
+                />
+                <label for="number-of-military" class="form-label ms-2 fw-bold">
+                  Número de Militares
+                </label>
+              </div>
+              <div class="form-floating mb-1 col">
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="monitor"
+                  placeholder="" 
+                  disabled
+                />
+                <label for="monitor" class="form-label ms-2 fw-bold">
+                  Monitor
+                </label>
+              </div>
+            </div>
+            <div class="accordion" id="accordion">
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button 
+                    class="accordion-button collapsed" 
+                    type="button" 
+                    data-bs-toggle="collapse" 
+                    data-bs-target="#collapseOne" 
+                    aria-expanded="false" 
+                    aria-controls="collapseOne"
+                  >
+                    <span class="fw-bold">Observações de Turma</span>
+                  </button>
+                </h2>
+                <div 
+                  id="collapseOne" 
+                  class="accordion-collapse collapse" 
+                  aria-labelledby="headingOne" 
+                  data-bs-parent="#accordion"
+                >
+                  <div class="accordion-body p-0">
+                    <textarea 
+                      id="observation" 
+                      class="form-control border-0"
+                      placeholder="Digite suas observações aqui..."
+                      disabled
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row d-flex flex-row justify-content-center mt-2">
+              <div class="border rounded" id="search-table">
+                <table class="table table-sm table-bordered">
+                  <thead class="border">
+                    <tr class="text-center border">
+                      <th scope="col" class="bg-secondary text-white w-25">
+                        Matricula
+                      </th>
+                      <th scope="col" class="bg-secondary text-white w-25">
+                        Graduação
+                      </th>
+                      <th scope="col" class="bg-secondary text-white w-25">
+                        Nome Funcional
+                      </th>
+                      <th scope="col" class="bg-secondary text-white w-25">
+                        Função
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card-footer text-center">
+          <button type="button" class="btn btn-secondary" id="btn-edit">
+            Editar
+          </button>
+          <button type="button" class="btn btn-danger" id="btn-delete">
+            Deletar
+          </button>
+        </div>
+      </div> 
+    </form>
+  </div>
+  <script src="../public/js/bootstrap.bundle.min.js"></script>
+  <script src="./rendererClassroomRecord.js"></script>
+</body>
+</html>

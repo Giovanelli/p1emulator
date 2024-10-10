@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../public/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container-fluid">
+    <h1 class="h1 text-center mt-3">Quantas turmas serão criadas?</h1>
+    <form id="classroom-dialog-form">
+      <div class="row d-flex flex-column align-items-center">
+        <div class="col-6">
+          <input 
+            type="number"
+            class="form-control col-5" 
+            id="count" 
+            min="1" 
+            value="1" 
+            required
+          />
+        </div> 
+        <button type="submit" class="btn btn-secondary mt-3 col-5">
+          Criar
+        </button> 
+      </div>
+    </form>
+  </div>
+  <script src="../public/js/bootstrap.min.js"></script>
+  <script src="rendererClassroomDialog.js"></script>
+</body>
+</html>

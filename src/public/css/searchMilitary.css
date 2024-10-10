@@ -1,0 +1,40 @@
+#div-radios {
+  padding: 0;
+  width: 315px;
+}
+
+#div-search {
+  padding: 0;
+  width: 350px;
+}
+
+#advanced-search {
+  width: 689px;
+}
+
+#btn-refresh {
+  width: 30px;
+  height: 30px;
+}
+
+#icon-refresh {
+  font-size: 20px;
+}
+
+#search-table {
+  /* width: 730px; */
+  width: 100%;
+  height: 300px;
+  overflow: auto;
+  padding: 0;
+}
+
+table {
+  margin: 0
+}
+
+thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}

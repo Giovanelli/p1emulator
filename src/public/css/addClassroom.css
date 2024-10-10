@@ -1,0 +1,10 @@
+
+#alert {
+  display: none;
+  border-radius: 5px;
+  font-size: 18px;
+}
+
+.card-body {
+  height: 60vh;
+}
