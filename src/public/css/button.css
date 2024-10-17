@@ -1,0 +1,9 @@
+
+button {
+  transition: .3s;
+
+  &:hover {
+    box-shadow: 8px 8px #b7c1d3;
+    transition: .3s;
+  }
+}

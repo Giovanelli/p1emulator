@@ -2,9 +2,14 @@ const {
   app, 
   BrowserWindow, 
   ipcMain, 
-  nativeTheme, 
+  nativeTheme,
+  dialog 
 } = require('electron');
+
 const path = require('node:path');
+const fs = require('fs');
+const csv = require('csv-parser');
+
 
 const { 
   addMilitaryData, 
@@ -112,6 +117,36 @@ const openClassroomDialog = () => {
   }
 }
 
+//Main Military Window
+let militaryWindow
+const mainMilitaryWindow = () => {
+  //Does not allow more than one instance to be opened
+  if (militaryWindow !== undefined && militaryWindow !== null) {
+    if (militaryWindow.isMinimized()) { 
+      militaryWindow.restore() 
+    }
+    militaryWindow.focus()
+    return
+  }
+  
+  militaryWindow = new BrowserWindow({
+    width: 800,
+    height: 450,
+    resizable: false,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: false,
+      contextIsolation: true
+    }
+  })
+
+  militaryWindow.loadFile('./src/views/mainMilitaryWindow.html');
+
+  militaryWindow.on('closed', () => {
+    militaryWindow = null;
+  });
+}
+
 //Add military window
 let addMilitary
 const addMilitaryWindow = () => {
@@ -154,6 +189,36 @@ const searchMilitaryWindow = () => {
   });
 
   searchMilitary.loadFile('./src/views/searchMilitary.html');
+}
+
+//Main Classroom Window
+let classroomWindow
+const mainClassroomWindow = () => {
+  //Does not allow more than one instance to be opened
+  if (classroomWindow !== undefined && classroomWindow !== null) {
+    if (classroomWindow.isMinimized()) { 
+      classroomWindow.restore() 
+    }
+    classroomWindow.focus()
+    return
+  }
+  
+  classroomWindow = new BrowserWindow({
+    width: 800,
+    height: 450,
+    resizable: false,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: false,
+      contextIsolation: true
+    }
+  })
+
+  classroomWindow.loadFile('./src/views/mainClassroomWindow.html');
+
+  classroomWindow.on('closed', () => {
+    classroomWindow = null;
+  });
 }
 
 //Add classroom window
@@ -283,9 +348,53 @@ const classroomRecordWindow = (classroomId) => {
   return newClassroomRecordWindow
 }
 
+//Main Activity Window
+let activityWindow
+const mainActivityWindow = () => {
+  //Does not allow more than one instance to be opened
+  if (activityWindow !== undefined && activityWindow !== null) {
+    if (activityWindow.isMinimized()) { 
+      activityWindow.restore() 
+    }
+    activityWindow.focus()
+    return
+  }
+  
+  activityWindow = new BrowserWindow({
+    width: 800,
+    height: 450,
+    resizable: false,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: false,
+      contextIsolation: true
+    }
+  })
+
+  activityWindow.loadFile('./src/views/mainActivityWindow.html');
+
+  activityWindow.on('closed', () => {
+    activityWindow = null;
+  });
+}
+
+
+
 app.whenReady().then(() => {
   initializeDatabase();
   createWindow();
+
+  ipcMain.on('open-military-window', () => {
+    mainMilitaryWindow();
+  });
+
+  ipcMain.on('open-classroom-window', () => {
+    mainClassroomWindow();
+  });
+
+  ipcMain.on('open-activity-window', () => {
+    mainActivityWindow();
+  });
 
   ipcMain.on('open-add-military-window', () => {
     addMilitaryWindow();
@@ -516,6 +625,39 @@ app.whenReady().then(() => {
       console.error('Erro ao deletar o militar: ', error)
     }
   })
+
+  ipcMain.handle('open-file-csv', async () => {
+    const {canceled, filePaths } = await dialog.showOpenDialog({
+      properties: ['openFile'],
+      filters: [
+        { name: 'CSV Files', extensions: ['csv'] },
+        { name: 'All Files', extensions: ['*'] }
+      ],
+    });
+
+    if (canceled) {
+      return null;
+    } else {
+      return filePaths[0];
+    }
+  });
+
+  ipcMain.handle('read-file-csv', async (event, filePath) => {
+    const results = [];
+
+    return new Promise((resolve, reject) => {
+      fs.createReadStream(filePath)
+        .pipe(csv())
+        .on('data', (data) => results.push(data))
+        .on('end', () => {
+          resolve(results);
+        })
+        .on('error', (error) => {
+          reject(error);
+        });
+    });
+  });
+
 
   app.on('activate', () => {
     if(BrowserWindow.getAllWindows().length === 0) createWindow()

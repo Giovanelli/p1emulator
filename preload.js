@@ -2,9 +2,16 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 
 contextBridge.exposeInMainWorld('api', {
+
+  openMilitaryWindow: () => ipcRenderer.send('open-military-window'),
+  openClassroomWindow: () => ipcRenderer.send('open-classroom-window'),
+  openActivityWindow: () => ipcRenderer.send('open-activity-window'),
   
   openAddMilitary: () => ipcRenderer.send('open-add-military-window'),
   openSearchMilitary: () => ipcRenderer.send('open-search-military-window'),
+  openFileCsv: () => ipcRenderer.invoke('open-file-csv'),
+  readCsvFile: (filePath) => ipcRenderer.invoke('read-file-csv', filePath),
+  
   openAddClassroom: () => ipcRenderer.send('open-add-classroom-window'),
   openSearchClassroom: () => ipcRenderer.send('open-search-classroom-window'),
   
