@@ -28,19 +28,24 @@
         </div>
         <div class="card-body h-100">
           <div class="container-fluid d-flex flex-column gap-2">
-            <div class="row">
-              <div class="form-floating mb-1 col">
+            
+            <div class="row d-flex justify-content-center">
+              <div class="form-floating mb-1 col-2">
                 <select class="form-select" id="classroom-number"></select>
-                <label for="classroom-number" class="form-label ms-2 fw-bold">
+                <label for="classroom-number" class="form-label ms-2 pb-2 fw-bold">
                   Turma
                 </label>
               </div>
+            </div>
+            
+            <div class="row">
               <div class="form-floating mb-1 col">
                 <input 
-                  type="number" 
-                  class="form-control" 
+                  type="text" 
+                  class="form-control validate-number-input" 
                   id="military-number"
                   placeholder=""
+                  maxlength="7"
                   required
                 />
                 <label for="military-number" class="form-label ms-2 fw-bold">
@@ -50,28 +55,16 @@
               <div class="form-floating mb-1 col">
                 <input 
                   type="text" 
-                  class="form-control" 
-                  id="functional-name"
-                  placeholder="" 
-                  required
-                />
-                <label for="functional-name" class="form-label ms-2 fw-bold">
-                  Nome Funcional
-                </label>
-              </div>
-            </div>
-            <div class="row">
-              <div class="form-floating mb-1 col">
-                <input 
-                  type="text" 
-                  class="form-control" 
+                  class="form-control validate-letter-input" 
                   id="name"
                   placeholder="" 
                   required
                 />
-                <label for="name" class="form-label ms-2 fw-bold">Nome</label>
+                <label for="name" class="form-label ms-2 fw-bold">Nome Completo</label>
               </div>
-              <div class="form-floating mb-1 col-3">
+            </div>
+            <div class="row">
+              <div class="form-floating mb-1 col">
                   <select class="form-select" id="rank">
                     <option value="soldado">Soldado</option>
                     <option value="cabo">Cabo</option>
@@ -79,6 +72,18 @@
                   <label for="rank" class="form-label ms-2 fw-bold">
                     Graduação
                   </label>
+              </div>
+              <div class="form-floating mb-1 col">
+                <input 
+                  type="text" 
+                  class="form-control validate-letter-input" 
+                  id="functional-name"
+                  placeholder="" 
+                  required
+                />
+                <label for="functional-name" class="form-label ms-2 fw-bold">
+                  Nome Funcional
+                </label>
               </div>
               <div class="form-floating mb-1 col">
                 <select class="form-select" id="role">
@@ -97,6 +102,7 @@
               </div>
             </div>
             <div class="row">
+             
               <div class="form-floating mb-1 col">
                 <select class="form-select" id="driver-licence">
                   <option value=""></option>
@@ -117,7 +123,7 @@
               <div class="form-floating mb-1 col">
                 <input 
                   type="text" 
-                  class="form-control" 
+                  class="form-control validate-letter-input" 
                   id="academic-background"
                   placeholder="" 
                 />
@@ -131,7 +137,7 @@
               <div class="form-floating mb-1 col">
                 <input 
                   type="text" 
-                  class="form-control" 
+                  class="form-control validate-alphanumeric-input" 
                   id="profissional-experience"
                   placeholder="" 
                 />
@@ -144,7 +150,7 @@
               <div class="form-floating mb-1 col">
                 <input 
                   type="text" 
-                  class="form-control" 
+                  class="form-control validate-number-input" 
                   id="first-phone"
                   placeholder="" 
                   required
@@ -156,7 +162,7 @@
               <div class="form-floating mb-1 col">
                 <input 
                   type="text" 
-                  class="form-control" 
+                  class="form-control validate-number-input" 
                   id="second-phone"
                   placeholder="" 
                 />
@@ -169,7 +175,7 @@
               <div class="form-floating mb-1 col">
                 <input 
                   type="text" 
-                  class="form-control" 
+                  class="form-control validate-alphanumeric-input" 
                   id="street" 
                   placeholder=""
                   required
@@ -181,7 +187,7 @@
               <div class="form-floating mb-1 col-2 numeric-field">
                 <input 
                   type="text" 
-                  class="form-control" 
+                  class="form-control validate-alphanumeric-input" 
                   id="house-number"
                   placeholder="" 
                   required
@@ -193,7 +199,7 @@
               <div class="form-floating mb-1 col">
                 <input 
                   type="text" 
-                  class="form-control" 
+                  class="form-control validate-alphanumeric-input" 
                   id="complement"
                   placeholder="" 
                   required
@@ -207,7 +213,7 @@
               <div class="form-floating mb-1 col">
                 <input 
                   type="text" 
-                  class="form-control" 
+                  class="form-control validate-alphanumeric-input" 
                   id="neighborhood"
                   placeholder="" 
                   required
@@ -219,7 +225,7 @@
               <div class="form-floating mb-1 col">
                 <input 
                   type="text" 
-                  class="form-control" 
+                  class="form-control validate-alphanumeric-input" 
                   id="city"
                   placeholder="" 
                   required
@@ -275,6 +281,6 @@
     </form>
   </div>
   <script src="../public/js/bootstrap.bundle.min.js"></script>
-  <script src="./rendererForm.js" defer></script>
+  <script src="../renderers/rendererForm.js" defer></script>
 </body>
 </html>

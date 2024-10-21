@@ -19,6 +19,7 @@ function init() {
           console.log(`Arquivo CSV selecionado: ${filePath}`);
 
           const csvData = await window.api.readCsvFile(filePath);
+          
           console.log('Dados do CSV', csvData)
         } else {
           console.log('O arquivo selecionado não é um CSV.')

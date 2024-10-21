@@ -71,7 +71,7 @@ const createWindow = () => {
 
 //first dialog classroom
 const openClassroomDialog = () => {
-  const father = BrowserWindow.getFocusedWindow();
+  const father = BrowserWindow.getFocusedWindow() || mainWindow;
   if(father) {
     const classroomDialogWindow = new BrowserWindow({
       parent: mainWindow,
@@ -159,7 +159,7 @@ const addMilitaryWindow = () => {
   
   addMilitary = new BrowserWindow({
     width: 800,
-    height: 730,
+    height: 670,
     resizable: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -648,7 +648,10 @@ app.whenReady().then(() => {
     return new Promise((resolve, reject) => {
       fs.createReadStream(filePath)
         .pipe(csv())
-        .on('data', (data) => results.push(data))
+        .on('data', (data) => {
+          console.log(data)
+          results.push(data)
+        })
         .on('end', () => {
           resolve(results);
         })
