@@ -58,6 +58,16 @@ function getMilitaryById(id) {
   return stmt.get(id);
 }
 
+function getMilitaryByNumber(militaryNumber) {
+  const stmt = database.prepare('SELECT * FROM military WHERE militaryNumber = ?')
+  return stmt.get(militaryNumber)
+}
+
+function getMilitaryByFunctionalName(functionalName) {
+  const stmt = database.prepare('SELECT * FROM military WHERE functionalName = ?');
+  return stmt.get(functionalName)
+}
+
 function updateMilitaryData(id, data) {
   const stmt = database.prepare(`
     UPDATE military SET
@@ -120,6 +130,8 @@ module.exports = {
   addMilitaryData,
   getMilitaryData,
   getMilitaryById,
+  getMilitaryByNumber,
+  getMilitaryByFunctionalName,
   updateMilitaryData,
   deleteMilitaryById,
   hasMilitaryRecords

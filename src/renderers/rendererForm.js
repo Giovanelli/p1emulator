@@ -42,18 +42,17 @@ function handleFormSubmit() {
       profissionalExperience: document.querySelector('#profissional-experience').value.toLowerCase(),
       academicBackground: document.querySelector('#academic-background').value.toLowerCase()
     };
+   
+    try {
+      window.api.sendMilitaryData(JSON.stringify(formData));
+      alert('Militar cadastrado com sucesso!');
+      const continueAdd = confirm('Continuar Cadastrando?');
+      if (!continueAdd) window.close();
 
-    console.log(formData)
-    // try {
-    //   window.api.sendMilitaryData(JSON.stringify(formData));
-    //   alert('Militar cadastrado com sucesso!');
-    //   const continueAdd = confirm('Continuar Cadastrando?');
-    //   if (!continueAdd) window.close();
-
-    // } catch (error) {
-    //   console.error('Erro ao cadastrar militar: ', error);
-    //   alert('Erro ao cadastrar militar.');
-    // }
+    } catch (error) {
+      console.error('Erro ao cadastrar militar: ', error);
+      alert('Erro ao cadastrar militar.');
+    }
   });
 }
 

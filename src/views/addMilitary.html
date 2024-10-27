@@ -45,7 +45,10 @@
                   class="form-control validate-number-input" 
                   id="military-number"
                   placeholder=""
+                  minlength="6"
                   maxlength="7"
+                  data-bs-toggle="tooltip" 
+                  title="Apenas números"
                   required
                 />
                 <label for="military-number" class="form-label ms-2 fw-bold">
@@ -87,7 +90,7 @@
               </div>
               <div class="form-floating mb-1 col">
                 <select class="form-select" id="role">
-                  <option value="sem_funcao">Sem Função</option>
+                  <option value="">Sem Função</option>
                   <option value="p1">P1</option>
                   <option value="p2">P2</option>
                   <option value="p3">P3</option>
@@ -123,7 +126,7 @@
               <div class="form-floating mb-1 col">
                 <input 
                   type="text" 
-                  class="form-control validate-letter-input" 
+                  class="form-control" 
                   id="academic-background"
                   placeholder="" 
                 />
@@ -137,7 +140,7 @@
               <div class="form-floating mb-1 col">
                 <input 
                   type="text" 
-                  class="form-control validate-alphanumeric-input" 
+                  class="form-control" 
                   id="profissional-experience"
                   placeholder="" 
                 />
@@ -164,7 +167,8 @@
                   type="text" 
                   class="form-control validate-number-input" 
                   id="second-phone"
-                  placeholder="" 
+                  placeholder=""
+                  required 
                 />
                 <label for="second-phone" class="form-label ms-2 fw-bold">
                   Telefone 2
@@ -202,7 +206,6 @@
                   class="form-control validate-alphanumeric-input" 
                   id="complement"
                   placeholder="" 
-                  required
                 />
                 <label for="complement" class="form-label ms-2 fw-bold">
                   Complemento
@@ -241,11 +244,12 @@
                   type="number" 
                   class="form-control" 
                   id="rpm-origin"
-                  placeholder="" 
-                  required
+                  placeholder=""
+                  data-bs-toggle="tooltip" 
+                  title="RPM, Centro, Diretoria" 
                 />
                 <label for="rpm-origin" class="form-label ms-2 fw-bold">
-                  RPM Origem
+                  Local Origem
                 </label>
               </div>
               <div class="form-floating mb-1 col">
@@ -254,7 +258,6 @@
                   class="form-control" 
                   id="unit-origin"
                   placeholder="" 
-                  required
                 />
                 <label for="unit-origin" class="form-label ms-2 fw-bold">
                   Unidade Origem
@@ -265,7 +268,6 @@
                   type="text" 
                   class="form-control" 
                   id="company-origin"
-                  placeholder="" 
                 />
                 <label for="company-origin" class="form-label ms-2 fw-bold">
                   Companhia Origem

@@ -14,7 +14,7 @@
   >
   <title>Militar</title>
   <link rel="stylesheet" href="../public/css/bootstrap.min.css">
-  <link rel="stylesheet" href="../public/icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="../public/css/button.css">
 </head>
 <body>
   <div class="container-fluid p-3 vh-100">
@@ -23,28 +23,47 @@
         <h1>Militar</h1>
       </div>
       <div class="card-body">
-        <div class="row gap-2">
-        
-          <button 
-            type="button" 
-            class="btn btn-secondary" 
-            id="btn-add-military"
-          >
-            Cadastrar Militar
-          </button>
-        
-          <button 
-            type="button" 
-            id="btn-search-military" 
-            class="btn btn-secondary"
-          >
-            Pesquisar Militar
-          </button>
+        <div
+          class="
+            container-fluid
+            d-flex
+            justify-content-around
+            flex-column
+            h-100
+          "
+        >
+          <div class="d-flex flex-row justify-content-around">
+            <button 
+              type="button"
+              id="btn-add-military" 
+              class="btn btn-secondary" 
+            >
+              <img src="../public/icons/addMilitary-128px.png" alt="">
+              <br/>
+              Cadastrar Militar
+            </button>
+          
+            <button 
+              type="button" 
+              id="btn-search-military" 
+              class="btn btn-secondary"
+            >
+              <img src="../public/icons/searchMilitary-128px.png" alt="">
+              <br/>
+              Pesquisar Militar
+            </button>
 
-          <button type="button" id="btn-csv" class="btn btn-secondary">
-            <i class="bi bi-filetype-csv fs-3"></i> Importar arquivo
-          </button>
-      
+            <button 
+              type="button" 
+              id="btn-csv" 
+              class="btn btn-secondary"
+            >
+              <img src="../public/icons/csvFile-128px.png" alt="">
+              <br/>
+              Importar arquivo
+            </button>
+        
+          </div>
         </div>
       </div>  
         

@@ -16,6 +16,7 @@ const {
   getMilitaryData,
   updateMilitaryData,
   deleteMilitaryById,
+  getMilitaryByNumber,
   hasMilitaryRecords
 } = require('./dataBase/military');
 
@@ -44,6 +45,8 @@ const {
   advancedSearchMilitary,
   getCombinedDataEdit
 } = require('./dataBase/database')
+
+const { validateCsvRecord } = require('./src/public/js/validateCsv')
 
 
 let mainWindow; 
@@ -650,6 +653,8 @@ app.whenReady().then(() => {
         .pipe(csv())
         .on('data', (data) => {
           console.log(data)
+          console.log(validateCsvRecord(data))
+          //console.log(validateCsvRecord(data))
           results.push(data)
         })
         .on('end', () => {
