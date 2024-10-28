@@ -87,12 +87,4 @@ contextBridge.exposeInMainWorld('api', {
     'delete-military-record',
     id
   ),
-
-  // notifyUpdate: () => ipcRenderer.send('update-table-search'),
-
-  // on: (channel, callback) => {
-  //   // Ouvinte de eventos do IPC
-  //   ipcRenderer.on(channel, (event, ...args) => callback(...args));
-  // }
-
 });
