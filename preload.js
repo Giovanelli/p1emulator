@@ -1,6 +1,5 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
-
 contextBridge.exposeInMainWorld('api', {
 
   openMilitaryWindow: () => ipcRenderer.send('open-military-window'),
@@ -14,16 +13,31 @@ contextBridge.exposeInMainWorld('api', {
   
   openAddClassroom: () => ipcRenderer.send('open-add-classroom-window'),
   openSearchClassroom: () => ipcRenderer.send('open-search-classroom-window'),
+
+  openAddActivity: () => ipcRenderer.send('open-add-activity'),
+  openSearchActivity: () => ipcRenderer.send('open-search-activity'),
+  openGenerateScale: () => ipcRenderer.send('open-generate-scale'),
+  openSearchScale: () => ipcRenderer.send('open-search-scale'),
   
   sendMilitaryData: (formData) => ipcRenderer.invoke(
     'add-military-data', 
     formData
   ),
 
+  addActivityData: async (formData) => {
+    return await ipcRenderer.invoke('add-activity-data', formData)
+  },
+  
+
   addClassroomData: async (formData) => {
     return await ipcRenderer.invoke('add-classroom-data', formData)
   },
-  
+
+  showDialogActivity: (options) => {
+    const result = ipcRenderer.invoke('show-dialog-activity', options);
+    return result;
+  },
+
   getMilitaryData: () => ipcRenderer.invoke('get-military-data'),
   getClassroomData: () => ipcRenderer.invoke('get-classroom-data'),
   getClassroomMilitaryData: () => ipcRenderer.invoke(
@@ -39,11 +53,15 @@ contextBridge.exposeInMainWorld('api', {
 
   // Preenche a tela inicial de searchMilitaryWindow
   getCombinedData: () => ipcRenderer.invoke('get-combined-data'),
+  
+  searchClassroom: (field, value) => {
+    return ipcRenderer.invoke('search-classroom-data', {field, value});
+  },
+  
   // Form Search Military 
-  simpleSearchMilitary: (field, value) => ipcRenderer.invoke(
-    'simple-search-military',
-    {field, value}
-  ),
+  simpleSearchMilitary: (field, value) => {
+    return ipcRenderer.invoke('simple-search-military', {field, value})
+  },
 
   advancedSearchMilitary: (searchParams) => {
     return ipcRenderer.invoke('advanced-search-military', searchParams)

@@ -82,6 +82,17 @@ function createClassroomRecords(count) {
   }
 }
 
+function searchClassroom(field, value) {
+  if (field === 'monitor') value = `%${value}%`;
+
+  const stmt = database.prepare(
+    `SELECT * FROM classroom WHERE ${field} LIKE ?;`
+  );
+
+  return stmt.all(value);
+}
+
+
 module.exports = {
   addClassroomData,
   getClassroomData,
@@ -91,5 +102,6 @@ module.exports = {
   deleteClassroomById,
   hasClassroomRecords,
   createClassroomRecords,
-  updateNumberOfMilitary
+  updateNumberOfMilitary,
+  searchClassroom
 };

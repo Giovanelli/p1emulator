@@ -1,7 +1,5 @@
 const Database = require('better-sqlite3');
 const path = require('node:path');
-// const { addClassroomData, getClassroomData } = require('./classroom');
-
 const database = new Database(path.join(__dirname, 'cfs_database.db'));
 
 function initializeDatabase() {
@@ -46,6 +44,17 @@ function initializeDatabase() {
       PRIMARY KEY (classroomId, militaryId),
       FOREIGN KEY (classroomId) REFERENCES classroom(id),
       FOREIGN KEY (militaryId) REFERENCES military(id) ON DELETE CASCADE
+    )
+  `);
+
+  database.exec(`
+    CREATE TABLE IF NOT EXISTS activity(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      activityName TEXT UNIQUE NOT NULL,
+      activityWeight INTEGER NOT NULL,
+      type TEXT,
+      perimeter TEXT,
+      activityObservation TEXT
     )
   `);
 }

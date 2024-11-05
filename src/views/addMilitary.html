@@ -242,7 +242,7 @@
               <div class="form-floating mb-1 col">
                 <input 
                   type="number" 
-                  class="form-control" 
+                  class="form-control validate-alphanumeric-input" 
                   id="rpm-origin"
                   placeholder=""
                   data-bs-toggle="tooltip" 
@@ -255,7 +255,7 @@
               <div class="form-floating mb-1 col">
                 <input 
                   type="text" 
-                  class="form-control" 
+                  class="form-control validate-alphanumeric-input" 
                   id="unit-origin"
                   placeholder="" 
                 />
@@ -266,8 +266,9 @@
               <div class="form-floating mb-1 col">
                 <input 
                   type="text" 
-                  class="form-control" 
+                  class="form-control validate-alphanumeric-input" 
                   id="company-origin"
+                  placeholder=""
                 />
                 <label for="company-origin" class="form-label ms-2 fw-bold">
                   Companhia Origem
@@ -283,6 +284,7 @@
     </form>
   </div>
   <script src="../public/js/bootstrap.bundle.min.js"></script>
-  <script src="../renderers/rendererForm.js" defer></script>
+  <script src="../public/js/validateForm.js"></script>
+  <script src="../renderers/rendererAddMilitary.js" defer></script>
 </body>
 </html>

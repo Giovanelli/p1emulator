@@ -12,10 +12,9 @@
       style-src 'self' 'unsafe-inline';
     "
   >
-  <title>Pesquisa de Turma</title>
+  <title>Pesquisa de Atividade</title>
   
   <link rel="stylesheet" href="../public/css/bootstrap.min.css">
-  <link rel="stylesheet" href="../public/css/searchClassroom.css">
   <link rel="stylesheet" href="../public/icons/bootstrap-icons.css">
 </head>
 <body>
@@ -23,7 +22,7 @@
 
     <div class="card mb-2">
       <div class="card-header text-center">
-        <h1>Pesquisa de Turma</h1>
+        <h1>Pesquisa de Atividade</h1>
       </div>
       <div class="card-body">
         <!-- engloba o form e a table -->
@@ -34,7 +33,7 @@
               <div class="d-flex justify-content-end gap-1 me-1" id="div-radios">
                 <input 
                   type="radio" 
-                  class="btn-check onlyNumber" 
+                  class="btn-check" 
                   name="options" 
                   id="radio-classroom-number" 
                 />
@@ -46,7 +45,7 @@
                 </label>
                 <input 
                   type="radio" 
-                  class="btn-check onlyLetter" 
+                  class="btn-check" 
                   name="options" 
                   id="radio-monitor" 
                 />
@@ -63,7 +62,6 @@
                   class="form-control"
                   id="input-search" 
                   placeholder="Pesquisa..."
-                  disabled
                 />
               </div>
             </div>
@@ -89,16 +87,19 @@
               <table class="table table-sm table-bordered">
                 <thead class="border">
                   <tr class="text-center border">
-                    <th scope="col" class="bg-secondary text-white w-25">
-                      Turma
+                    <th scope="col" class="bg-secondary text-white">
+                      Nome
                     </th>
-                    <th scope="col" class="bg-secondary text-white w-25">
-                      Número de Militares
+                    <th scope="col" class="bg-secondary text-white">
+                      Peso
                     </th>
-                    <th scope="col" class="bg-secondary text-white w-25">
-                      Monitor
+                    <th scope="col" class="bg-secondary text-white">
+                      Tipo
                     </th>
-                    <th scope="col" class="bg-secondary text-white w-25">
+                    <th scope="col" class="bg-secondary text-white">
+                      Perimetro
+                    </th>
+                    <th scope="col" class="bg-secondary text-white">
                       Ficha
                     </th>
                   </tr>
@@ -111,17 +112,14 @@
         </div>
       </div>
       <div class="card-footer text-center">
-        <!-- <button class="btn btn-secondary" id="prevButton" disabled>
+        <button class="btn btn-secondary" id="prevButton" disabled>
           Anterior
         </button>
-        <button class="btn btn-secondary" id="nextButton">Próximo</button> -->
-        <button class="btn btn-secondary" id="prevButton" disabled></button>
-        <button class="btn btn-secondary" id="nextButton"></button>
+        <button class="btn btn-secondary" id="nextButton">Próximo</button>
       </div>
     </div>
   </div>
   <script src="../public/js/bootstrap.bundle.min.js"></script>
-  <script src="../public/js/validateForm.js"></script>
-  <script type="module" src="../renderers/rendererSearchClassroom.js"></script>
+  <script src="../renderers/rendererSearchActivity.js"></script>
 </body>
 </html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta 
+    http-equiv="Content-Security-Policy" 
+    content="
+      default-src 'self'; 
+      img-src 'self' data:; 
+      script-src 'self'; 
+      style-src 'self' 'unsafe-inline';
+    "
+  >
+  <title>Cadastro de Atividade</title>
+  <link rel="stylesheet" href="../public/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../public/css/textArea.css">
+</head>
+<body>
+  <div class="container-fluid p-3 vh-100">
+    <form id="form-add-activity">
+      <div class="card h-100">
+        <div class="card-header text-center">
+          <h1>Cadastro de Atividade</h1>
+        </div>
+        <div class="card-body h-100">
+          <div class="container-fluid d-flex flex-column gap-2">
+            <div class="row">
+              <div class="form-floating mb-1 col">
+                <input 
+                type="text" 
+                class="form-control validate-alphanumeric-input" 
+                id="activity-name"
+                placeholder=""
+                data-bs-toggle="tooltip" 
+                title="Campo Obrigatório! [Obs.: Acentuação não permitida.]"
+                required
+                />
+                <label for="activity-name" class="form-label ms-2 fw-bold">
+                Nome da atividade
+                </label>
+              </div>
+              
+            </div>
+            <div class="row">
+              <div class="form-floating mb-1 col-4">
+                <input 
+                type="text" 
+                class="form-control validate-number-input" 
+                id="activity-weight"
+                placeholder=""
+                data-bs-toggle="tooltip" 
+                title="Somente números"
+                required
+                />
+                <label for="activity-weight" class="form-label ms-2 fw-bold">
+                Peso da atividade
+                </label>
+              </div>
+              <div class="form-floating mb-1 col">
+                <select class="form-select" id="type">
+                  <option value="ordinária">Ordinária</option>
+                  <option value="extraordinária">Extraordinária</option>
+                </select>
+                <label for="type" class="form-label ms-2 fw-bold">
+                  Tipo
+                </label>
+              </div>
+              <div class="form-floating mb-1 col">
+                <select class="form-select" id="perimeter">
+                  <option value="interno">Interno</option>
+                  <option value="externo">Externo</option>
+                </select>
+                <label for="perimeter" class="form-label ms-2 fw-bold">
+                  Perímetro
+                </label>
+              </div>
+            </div>
+            <div class="row d-flex justify-content-center">
+              <div class="col-9">
+                <div class="form-floating">
+                  <textarea 
+                    class="form-control" 
+                    id="observation"
+                  ></textarea>
+                  <label for="observation" class="form-label ms-2 fw-bold">
+                    Observações
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer text-center">
+          <button type="submit" class="btn btn-secondary">Cadastrar</button>
+        </div>
+      </div> 
+    </form>
+  </div>
+  <script src="../public/js/bootstrap.bundle.min.js"></script>
+  <script src="../public/js/validateForm.js"></script>
+  <script src="../renderers/rendererAddActivity.js"></script>
+</body>
+</html>

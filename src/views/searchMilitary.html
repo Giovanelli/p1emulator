@@ -35,7 +35,7 @@
               <div class="d-flex justify-content-start gap-1" id="div-radios">
                 <input 
                   type="radio" 
-                  class="btn-check" 
+                  class="btn-check onlyNumber" 
                   name="options" 
                   id="radio-military-number" 
                 />
@@ -47,7 +47,7 @@
                 </label>
                 <input 
                   type="radio" 
-                  class="btn-check" 
+                  class="btn-check onlyLetter" 
                   name="options" 
                   id="radio-name" 
                 />
@@ -59,7 +59,7 @@
                 </label>
                 <input 
                   type="radio" 
-                  class="btn-check" 
+                  class="btn-check onlyLetter" 
                   name="options" 
                   id="radio-functional-name" 
                 />
@@ -73,9 +73,10 @@
               <div class="d-flex justify-content-start" id="div-search">
                 <input 
                   type="text" 
-                  class="form-control"
+                  class="form-control ms-2"
                   id="input-search" 
                   placeholder="Pesquisa..."
+                  disabled
                 />
               </div>
             </div>
@@ -203,8 +204,6 @@
               id="btn-refresh" 
               class="btn btn-outline-secondary d-flex justify-content-center align-items-center fw-bold col-2"
             >
-              <!-- <i class="bi bi-arrow-clockwise" id="icon-refresh"></i> -->
-              <!-- <i class="bi bi-arrow-repeat fs-4" id="icon-refresh"></i> -->
               <i class="bi bi-arrow-counterclockwise fs-4" id="icon-refresh"></i>
             </button>
           </div>
@@ -237,14 +236,20 @@
         </div>
       </div>
       <div class="card-footer text-center">
-        <button class="btn btn-secondary" id="prevButton" disabled>
+        <!-- <button class="btn btn-secondary" id="prevButton" disabled>
           Previous
+        </button> -->
+        <button class="btn btn-secondary" id="prevButton" disabled>
+          <i class="bi bi-caret-left-fill"></i>
         </button>
-        <button class="btn btn-secondary" id="nextButton">Next</button>
+        <!-- <button class="btn btn-secondary" id="nextButton">Next</button> -->
+        <button class="btn btn-secondary" id="nextButton">
+          <i class="bi bi-caret-right-fill"></i>
+        </button>
       </div>
     </div>
   </div>
   <script src="../public/js/bootstrap.bundle.min.js"></script>
-  <script src="../renderers/rendererSearchMilitary.js" defer></script>
+  <script type="module" src="../renderers/rendererSearchMilitary.js" defer></script>
 </body>
 </html>

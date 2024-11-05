@@ -24,7 +24,8 @@ function handleFormSubmit() {
     const formData = {
       classroomNumber: document.querySelector('#classroom-number').value,
       militaryNumber: document.querySelector('#military-number').value,
-      functionalName: document.querySelector('#functional-name').value.toLowerCase(),
+      functionalName: document.querySelector('#functional-name').value
+        .toLowerCase(),
       name: document.querySelector('#name').value.toLowerCase(),
       rank: document.querySelector('#rank').value,
       role: document.querySelector('#role').value,
@@ -37,10 +38,13 @@ function handleFormSubmit() {
       city: document.querySelector('#city').value.toLowerCase(),
       rpmOrigin: document.querySelector('#rpm-origin').value.toLowerCase(),
       unitOrigin: document.querySelector('#unit-origin').value.toLowerCase(),
-      companyOrigin: document.querySelector('#company-origin').value.toLowerCase(),
+      companyOrigin: document.querySelector('#company-origin').value
+        .toLowerCase(),
       driverLicence: document.querySelector('#driver-licence').value,
-      profissionalExperience: document.querySelector('#profissional-experience').value.toLowerCase(),
-      academicBackground: document.querySelector('#academic-background').value.toLowerCase()
+      profissionalExperience: document.querySelector('#profissional-experience')
+        .value.toLowerCase(),
+      academicBackground: document.querySelector('#academic-background').value
+        .toLowerCase()
     };
    
     try {
@@ -56,45 +60,9 @@ function handleFormSubmit() {
   });
 }
 
-function validateLetterInput() {
-  document.querySelectorAll(".validate-letter-input").forEach(function(input) {
-    input.addEventListener("input", function() {
-      // Remove qualquer caractere que não seja letra (a-z, A-Z) ou espaço
-      setTimeout(() => {
-        // Remove qualquer caractere que não seja letra (a-z, A-Z), acentuação ou espaço
-        this.value = this.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '');
-      }, 0);
-    }); 
-  });
-}
-
-function validateNumberInput() {
-  document.querySelectorAll(".validate-number-input").forEach(function(input) {
-    input.addEventListener("input", function() {
-      // Remove qualquer caractere que não seja um número (0-9)
-      this.value = this.value.replace(/[^0-9]/g, '');
-    });
-  });
-}
-
-function validateAlphanumericInput() {
-  document.querySelectorAll(".validate-alphanumeric-input").forEach(function(input) {
-    input.addEventListener("input", function() {
-      // Remove qualquer caractere que não seja letra (a-z, A-Z), número (0-9), çÇ ou espaço
-      setTimeout(() => {
-        // Remove qualquer caractere que não seja letra (a-z, A-Z), acentuação ou espaço
-        this.value = this.value.replace(/[^a-zA-ZÀ-ÿ0-9\s]/g, '');
-      }, 0);
-    });
-  });
-}
-
 function init() {
   document.addEventListener('DOMContentLoaded', () => {
     loadClassroomOptions();
-    validateLetterInput();
-    validateNumberInput();
-    validateAlphanumericInput();
     handleFormSubmit();
   });
 }
