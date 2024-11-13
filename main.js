@@ -17,7 +17,8 @@ const {
   updateMilitaryData,
   deleteMilitaryById,
   getMilitaryByNumber,
-  hasMilitaryRecords
+  hasMilitaryRecords,
+  getMilitaryByFunctionalName
 } = require('./dataBase/military');
 
 const { 
@@ -36,7 +37,9 @@ const {
   createClassroomMilitayData,
   addClassroomMilitaryData,
   getClassroomByMilitaryId,
-  updateClassroomMilitaryData
+  updateClassroomMilitaryData,
+  deleteClassroomMilitaryData,
+  getClassroomMilitaryByClassroomId
 } = require('./dataBase/classroomMilitary')
 
 const { 
@@ -55,6 +58,11 @@ const {
 
 const { validateCsvRecord } = require('./src/public/js/validateCsv');
 const { validateObject } = require('./src/public/js/validateObject');
+
+
+// Variável que armazena o arquivo CSV que é carregado
+let arqCsv = [];
+
 
 let mainWindow; 
 //main window
@@ -268,7 +276,6 @@ const searchClassroomWindow = () => {
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
-      enableRemoteModule: false,
       contextIsolation: true
     }
   });
@@ -335,7 +342,7 @@ const classroomRecordWindow = (classroomId) => {
 
   let newClassroomRecordWindow = new BrowserWindow({
     width: 800,
-    height: 750,
+    height: 690,
     resizable: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -434,7 +441,72 @@ const searchActivityWindow = () => {
   searchActivity.loadFile('./src/views/searchActivity.html');
 }
 
+let csvWindow;
+const csvListWindow = (csvData) => {
+  if (csvWindow !== undefined && csvWindow !== null) {
+    if (csvWindow.isMinimized()) { csvWindow.restore() }
+    csvWindow.focus()
+    return 
+  }
 
+  csvWindow = new BrowserWindow({
+    width: 820,
+    height: 610,
+    resizable: false,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true,
+      enableRemoteModule: false,
+    },
+  });
+
+  csvWindow.loadFile('./src/views/csvListData.html');
+
+  csvWindow.webContents.once('did-finish-load', () => {
+    csvWindow.webContents.send('display-csv-list', csvData);
+  });
+
+  csvWindow.on('closed', () => {
+    csvWindow = null;
+  });
+};
+
+let recordCsv;
+const correctionWindowCsv = (data, csvData) => {
+  if (recordCsv !== undefined && recordCsv !== null) {
+    if (recordCsv.isMinimized()) { recordCsv.restore() }
+    recordCsv.focus()
+    return 
+  }
+
+  recordCsv = new BrowserWindow({
+    width: 820,
+    height: 880,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true,
+      enableRemoteModule: false
+    }
+  });
+
+  recordCsv.loadFile('./src/views/csvRecord.html');
+  
+  recordCsv.webContents.once('did-finish-load', () => {
+    recordCsv.webContents.send('load-csv-record', data, csvData);
+  });
+
+  recordCsv.on('closed', () => {
+    recordCsv = null;
+  });
+}
+
+ipcMain.handle('validate-object', async (event, object) => {
+  return validateObject(object);  // Chama a função de validação
+});
+
+ipcMain.handle('validate-object-csv', async (event, object) => {
+  return validateCsvRecord(object);  // Chama a função de validação
+});
 
 app.whenReady().then(() => {
   initializeDatabase();
@@ -474,31 +546,62 @@ app.whenReady().then(() => {
 
   ipcMain.on('open-search-activity', () => {
     searchActivityWindow();
-  })
-  
-  ipcMain.handle('add-military-data',  (event, formData) => {
-    const data = JSON.parse(formData);
+  });
 
-    console.log(`Dados recebidos: ${JSON.stringify(data)}`)
+  ipcMain.on('window-csv-record', (event, data, csvData) => {
+    correctionWindowCsv(data, csvData);
+  });
+  
+  ipcMain.handle('add-military-data', async (event, formData) => {
+    const { classroomNumber, role, ...militaryData } = formData;
+
+    function capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+    }
+
     try {
       
-      const militaryId = addMilitaryData(data);
-      const dataClassroomMilitary = {
-        "classroomId": data.classroomNumber,
-        "militaryId": militaryId,
-        "role": data.role
-      };
+      const militaryId = await addMilitaryData(militaryData);
+      const { id: classroomId } = await getClassroomByNumber(classroomNumber);
+      const dataClassroomMilitary = { classroomId, militaryId, role };
       
-      addClassroomMilitaryData(dataClassroomMilitary);
-      updateNumberOfMilitary(data.classroomNumber)
+      await addClassroomMilitaryData(dataClassroomMilitary);
+      await updateNumberOfMilitary(classroomNumber, true)
       
-      return { success: true };
+      return { available: true };
     
     } catch (error) {
+
       console.error('Error adding military data:', error);
-      return { success: false, error: error.message };
+      let errorMessage = '';
+      let errorType = '';
+      
+      const { militaryNumber, functionalName } = militaryData;
+      const uniqueNumber = await getMilitaryByNumber(militaryNumber);
+      const uniqueFuncName = await getMilitaryByFunctionalName(functionalName);
+       
+      if (uniqueNumber) {
+        errorType = '[Erro] - Matrícula já cadastrada!'
+        errorMessage = 'O militar cadastrado com essa matrícula: ' + 
+          `${uniqueNumber.rank === 'soldado' ? 'SD' : 'CB'} ` + 
+          `${capitalizeFirstLetter(uniqueNumber.functionalName)}`
+      } 
+      if (uniqueFuncName) {
+        errorType = '[Erro] - Nome Funcional já cadastrado!'
+        errorMessage = 'O militar cadastrado com esse Nome Funcional: ' + 
+          `${uniqueFuncName.rank === 'soldado' ? 'SD' : 'CB'} ` + 
+          `${capitalizeFirstLetter(uniqueFuncName.functionalName)}`
+      }
+
+      return { 
+        available: false,
+        error: errorType, 
+        message: errorMessage 
+      };
+
     }
   });
+
 
   ipcMain.handle('get-military-data', () => {
     try {
@@ -553,7 +656,6 @@ app.whenReady().then(() => {
   ipcMain.handle('search-classroom-data', async (event, { field, value }) => {
     //Converte o valor de value para integer quando for um número.
     if(!isNaN(value)) value = parseInt(value);
-
     try {
       const result = await searchClassroom(field, value);
       return result;
@@ -641,13 +743,13 @@ app.whenReady().then(() => {
     }
   });
 
-  ipcMain.handle('update-military-data', async (event, id, updateData) => {
+  ipcMain.handle('update-military-data', async (event, militaryId, updateData) => {
 
     const { classroomNumber, role, ...militaryData} = updateData;
 
     try {
       
-      const classroomMilitary = getClassroomByMilitaryId(id);
+      const classroomMilitary = getClassroomByMilitaryId(militaryId);
       //consulta o número da turma pelo id passado
       const classroom = getClassroomById(classroomMilitary.classroomId);
 
@@ -659,7 +761,7 @@ app.whenReady().then(() => {
        */
       if (classroom.classroomNumber == updateData.classroomNumber) {  
         try {
-          await updateMilitaryData(id, militaryData);
+          await updateMilitaryData(militaryId, militaryData);
           await updateClassroomMilitaryData(
             id, 
             {classroomId: updateData.classroomNumber, role: updateData.role}
@@ -667,16 +769,22 @@ app.whenReady().then(() => {
         } catch (error) {
           console.error('Erro ao atualizar o militar: ', error);
         }
-        
       } else {
         const newClassroom = 
           await getClassroomByNumber(updateData.classroomNumber);
         
         try {
           await updateClassroomMilitaryData(
-            id, 
+            militaryId, 
             {classroomId: newClassroom.id, role: updateData.role}
           );
+
+          const classNum = await getClassroomById(classroomMilitary.classroomId)
+
+          //decrementa a classe antiga do militar
+          await updateNumberOfMilitary(classNum.classroomNumber, false);
+          //incrementa a classe nova do militar
+          await updateNumberOfMilitary(updateData.classroomNumber, true);
         } catch (error) {
           console.error('Erro ao editar o militar: ', error);
         }
@@ -688,34 +796,52 @@ app.whenReady().then(() => {
   });
 
   ipcMain.handle('update-classroom-data', async (event, id, updateData) => {
-
-    console.log('Id da turma que sera editada: ', id)
-    console.log('Os dados que serao editados: ', updateData)
     try {
-      await updateClassroomData(id, updateData)
+      await updateClassroomData(id, updateData);
+      return { available: true }
     } catch (error) {
-      console.error('Erro ao atualizar os dados: ', error)
-    }
-
-  })
-
-  ipcMain.handle('delete-military-record', async (event, id) => {
-    try {
-      await deleteMilitaryById(id)
-    } catch (error) {
-      console.error('Erro ao deletar o militar: ', error)
+      console.error('Erro ao atualizar os dados: ', error);
+      return { available: false }
     }
   })
 
-  // ATENÇÃO: o sistema deve somente ler aquivos csv.
+  ipcMain.handle('delete-military-record', async (event, militaryInfo) => {
+    try {
+      const { id, data: { classroomNumber } } = militaryInfo;
+
+      // Ajusta o número de militares na turma (decrementando)
+      await updateNumberOfMilitary(classroomNumber, false);
+      
+      // Exclui o registro militar
+      await deleteMilitaryById(id);
+      
+      // Exclui o registro intermediário classroomMilitary
+      await deleteClassroomMilitaryData(null, id);
+      
+      return { available: true };
+    } catch (error) {
+      console.error('Error deleting military record:', error);
+      return { available: false };
+    }
+  })
+
+  // ATENÇÃO: o sistema deve somente ler aquivos csv. CORRIGIR ISSO!!!
+  let isFileDialogOpen = false; // variável de controle
   ipcMain.handle('open-file-csv', async () => {
-    const {canceled, filePaths } = await dialog.showOpenDialog({
+    
+    if (isFileDialogOpen) return null; // Verifique se o diálogo já está aberto
+
+    isFileDialogOpen = true; // Marque como aberto
+    
+    const { canceled, filePaths } = await dialog.showOpenDialog({
       properties: ['openFile'],
       filters: [
         { name: 'CSV Files', extensions: ['csv'] },
         { name: 'All Files', extensions: ['*'] }
       ],
     });
+
+    isFileDialogOpen = false; // Marque como fechado
 
     if (canceled) {
       return null;
@@ -724,26 +850,35 @@ app.whenReady().then(() => {
     }
   });
 
-  // ATENÇÃO: Falta terminar as validações!!!
   ipcMain.handle('read-file-csv', async (event, filePath) => {
-    const results = [];
+    const result = [];
 
     return new Promise((resolve, reject) => {
       fs.createReadStream(filePath)
-        .pipe(csv())
+        .pipe(csv({
+          // Remove espaços dos nomes das colunas
+          mapHeaders: ({ header }) => header.trim()
+        }))
         .on('data', (data) => {
-          console.log(data)
-          console.log(validateCsvRecord(data))
-          //console.log(validateCsvRecord(data))
-          results.push(data)
+          const validRegistration = validateObject(data)
+          const recordErrors = validateCsvRecord(validRegistration);
+
+          if (Object.keys(recordErrors).length > 0) {
+            validRegistration.errors = recordErrors;
+          }
+          
+          result.push(validRegistration);
         })
         .on('end', () => {
-          resolve(results);
+          resolve(result)
+          arqCsv = result;
+          csvListWindow(result);
         })
         .on('error', (error) => {
           reject(error);
         });
     });
+
   });
 
   ipcMain.handle('add-activity-data', async (event, formData) => {
@@ -757,9 +892,7 @@ app.whenReady().then(() => {
           available: true,
           message: 'Atividade cadastrada com sucesso'
         }
-
       } else {
-
         return {
           available: false,
           message: 'Esta atividade já está cadastrada!'
@@ -771,6 +904,33 @@ app.whenReady().then(() => {
 
   });
 
+  let csvRecordReceive;
+  ipcMain.on('update-csv-data', (event, updatedData) => {
+    let {errors, ...csvReceive} = updatedData;
+    
+    csvRecordReceive = validateObject(csvReceive);
+    csvRecordReceive.errors = errors;
+
+    const index = arqCsv.findIndex(item => 
+      item.militaryNumber === csvRecordReceive.militaryNumber
+    );
+
+    if (index !== -1) {
+      arqCsv[index] = csvRecordReceive;
+    } else {
+      arqCsv.push(csvRecordReceive);
+    }
+
+  });
+
+  ipcMain.handle('get-stored-csv-data', () => {
+    if(Object.keys(csvRecordReceive).length > 0) {  
+      return arqCsv;
+    }
+    //return arqCsv
+  });
+
+  // DIALOGS
   ipcMain.handle('show-dialog-activity', async (event, options) => {
 
     // Identifica a janela que enviou o evento
@@ -790,6 +950,7 @@ app.whenReady().then(() => {
     }
     
   });
+
 
 
   app.on('activate', () => {

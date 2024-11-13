@@ -64,7 +64,9 @@ function getMilitaryByNumber(militaryNumber) {
 }
 
 function getMilitaryByFunctionalName(functionalName) {
-  const stmt = database.prepare('SELECT * FROM military WHERE functionalName = ?');
+  const stmt = database.prepare(
+    'SELECT * FROM military WHERE functionalName = ?'
+  );
   return stmt.get(functionalName)
 }
 

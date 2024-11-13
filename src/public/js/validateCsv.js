@@ -1,118 +1,314 @@
-const { getMilitaryByNumber, getMilitaryByFunctionalName } = require('../../../dataBase/military');
+const { 
+	getMilitaryByNumber, 
+	getMilitaryByFunctionalName 
+} = require('../../../dataBase/military');
+
 const { getClassroomByNumber } = require('../../../dataBase/classroom');
 
 function validateCsvRecord(record) {
-    let errors = [];
+	const errors = {};
 
-    // Funções auxiliares para evitar repetição de código
-    const isEmpty = (field, fieldName) => {
-        if (field === '') {
-            errors.push(`O campo ${fieldName} é obrigatório.`);
-            return true;
-        }
-        return false;
-    };
+	// Funções auxiliares para evitar repetição de código
+	const isEmpty = (field, fieldName, message) => {
+		if (field === '') {
+			errors[fieldName] = `O campo ${message} não pode estar vazio.`;
+			return true;
+		}
+		return false;
+	};
 
-    const isNumeric = (field, fieldName) => {
-        if (!/^\d+$/.test(field)) {
-            errors.push(`${fieldName} deve conter apenas números.`);
-            return false;
-        }
-        return true;
-    };
+	const isNumeric = (field, fieldName, message) => {
+		if (!/^\d+$/.test(field)) {
+			errors[fieldName] = `${message} deve conter apenas números.`;
+			return false;
+		}
+		return true;
+	};
 
-    const isValidLength = (field, min, max, fieldName) => {
-        if (field.length < min || field.length > max) {
-            errors.push(`${fieldName} deve ter entre ${min} e ${max} caracteres.`);
-            return false;
-        }
-        return true;
-    };
+	const isLetter = (field, fieldName, message) => {
+		if (!/^[A-Za-zÇç\s]+$/.test(field)) {
+			errors[fieldName] = `${message} deve conter apenas letras.`
+			return false;
+		}
+		return true;
+	};
 
-    const recordExists = (checkFunc, field, fieldName, successMsg) => {
-        if (checkFunc(field)) {
-            errors.push(`${fieldName} já existe no sistema.`);
-        } else {
-            errors.push(successMsg);
-        }
-    };
+	const isAlphaNumeric = (field, fieldName, message) => {
+		if (!/^[a-zA-Z0-9 Çç]+$/.test(field)) {
+			errors[fieldName] = `${message} deve conter apenas letras e números.`
+			return false;
+		}
+		return true;
+	};
 
-    // Validação da turma
-    if (!isEmpty(record.classroomNumber, "número da turma")) {
-        if (isNumeric(record.classroomNumber, "Número da turma")) {
-            if (!getClassroomByNumber(record.classroomNumber)) {
-                errors.push(`O registro da turma ${record.classroomNumber} não existe no banco de dados.`);
-            } else {
-                errors.push('O registro de turma está correto.');
-            }
-        }
-    }
+	const isValidLength = (field, min, max, fieldName, message) => {
+		if (field.length < min || field.length > max) {
+			errors[fieldName] = 
+				`${message} deve ter entre ${min} e ${max} caracteres.`
+			return false;
+		}
+		return true;
+	};
 
-    // Validação da matrícula
-    if (!isEmpty(record.militaryNumber, "matrícula")) {
-        if (isNumeric(record.militaryNumber, "Matrícula") && isValidLength(record.militaryNumber, 5, 7, "Matrícula")) {
-            recordExists(getMilitaryByNumber, record.militaryNumber, "Matrícula", "O registro de matrícula está correto.");
-        }
-    }
+	const recordExists = (checkFunc, field, fieldName, message, option) => {
+		if(option === true) {
+			if (!checkFunc(field)) { 
+				errors[fieldName] = `${message} não existe no sistema.`;
+				return false;
+			} else return true;
+			
+		} else {
+			if (checkFunc(field)) { 
+				errors[fieldName] = `${message} já existe no sistema.`;
+				return false;
+			} else return true;
+		}
+		
+		
+	};
 
-    // Validação do nome funcional
-    if (!isEmpty(record.functionalName, "nome funcional")) {
-        recordExists(getMilitaryByFunctionalName, record.functionalName, "Nome funcional", "O registro de nome funcional está correto.");
-    }
+	// Validação da turma
+	if (!isEmpty(record.classroomNumber, 'classroomNumber','Turma')) {
+		if (isNumeric(record.classroomNumber, 'classroomNumber', 'Turma')) {
+			if (
+				recordExists(
+					getClassroomByNumber, 
+					record.classroomNumber, 
+					'classroomNumber', 
+					'Turma',
+					true
+				)
+			) {
+				errors['classroomNumber'] = 'ok';
+			}	
+		}
+	} 
 
-    // Validação do nome
-    if (!isEmpty(record.name, "nome")) {
-        if (/[^a-zA-ZÀ-ÿ\s]/g.test(record.name)) {
-            errors.push(`O nome ${record.name} deve conter apenas letras, acentuadas ou não.`);
-        } else {
-            errors.push('O registro de nome está correto.');
-        }
-    }
+	// Validação da matrícula
+	if (!isEmpty(record.militaryNumber, 'militaryNumber', 'Matrícula')) {
+		if (isNumeric(record.militaryNumber, 'militaryNumber', 'Matrícula')) {
+			if (
+				isValidLength(
+					record.militaryNumber, 
+					5, 
+					7, 
+					'militaryNumber', 
+					'Matrícula'
+				)
+			) {
+				if (
+					recordExists(
+						getMilitaryByNumber, 
+						record.militaryNumber, 
+						'militaryNumber', 
+						'Matrícula',
+						false
+					)
+				) {
+					errors['militaryNumber'] = 'ok';
+				}
+			}
+		}
+	}
 
-    // Validação da graduação
-    if (!isEmpty(record.rank, "graduação")) {
-        switch (record.rank) {
-            case 'soldado':
-            case 'cabo':
-                errors.push('O registro de graduação está correto.');
-                break;
-            default:
-                errors.push('O militar só pode receber a graduação de soldado ou cabo.');
-        }
-    }
+	// Validação do nome funcional
+	if (!isEmpty(record.functionalName, 'functionalName' , 'Nome-Funcional')) {
+		if(isLetter(record.functionalName, 'functionalName', 'Nome-Funcional')) {
+			if (
+				recordExists(
+					getMilitaryByFunctionalName, 
+					record.functionalName, 
+					'functionalName', 
+					'Este Nome-Funcional',
+					false
+				)
+			) {
+				errors['functionalName'] = 'ok';
+			}
+		}
+	}
 
-    // Validação do telefone
-    if (!isEmpty(record.firstPhone, "telefone")) {
-        if (isValidLength(record.firstPhone, 10, 11, "Telefone")) {
-            errors.push('O registro de telefone está correto.');
-        }
-    }
+	// Validação do nome
+	if (!isEmpty(record.name, 'name', 'Nome')) {
+		if(isLetter(record.name, 'name', 'Nome')) {
+			errors['name'] = 'ok';
+		}
+	}
 
-    // Validação da rua
-    if (!isEmpty(record.street, "logradouro")) {
-        errors.push('O registro de rua está correto.');
-    }
+	// Validação da graduação
+	if (!isEmpty(record.rank, 'rank', 'Graduação')) {
+			switch (record.rank) {
+					case 'soldado':
+					case 'cabo':
+						errors['rank'] = 'ok'
+						break;
+					default:
+						errors['rank'] = 'A Graduação deve ser Soldado ou Cabo.';
+			}
+	}
 
-    // Validação do número da residência
-    if (!isEmpty(record.houseNumber, "número da residência")) {
-        errors.push('O registro do número da residência está correto.');
-    }
+	if(record.role === '') {
+		errors['role'] = 'ok';
+	} else {
+		if(isValidLength(record.role, 2, 15, 'role', 'Função')) {
+			if(isAlphaNumeric(record.role, 'role', 'Função')) {
+				errors['role'] = 'ok';
+			}
+		}
+	}
 
-    // Validação do bairro
-    if (!isEmpty(record.neighborhood, "bairro")) {
-        errors.push('O compo bairro está correto.')
-    }
+	if(record.driverLicence === '') {
+		errors['driverLicence'] = 'ok';
+	} else {
+		if(isValidLength(record.driverLicence, 1, 2, 'driverLicence', 'CNH')) {
+			if(isLetter(record.driverLicence, 'driverLicence', 'CNH')) {
+				switch (record.driverLicence.toLowerCase()) {
+					case 'a':
+					case 'b':
+					case 'ab':
+					case 'ba':
+					case 'c':
+					case 'ac':
+					case 'ca':
+					case 'd':
+					case 'ad':
+					case 'da':
+					case 'e':
+					case 'ae':
+					case 'ea':
+						errors['driverLicence'] = 'ok'
+						break;
+					default:
+						errors['driverLicence'] = 'A CNH deve ser A/B/AB/C/AC/D/AD/E/AE';
+				}
+			}
+		}
+	}
 
-    // Validação da cidade
-    if (!isEmpty(record.city, "cidade")) {
-        errors.push('O campo cidade está correto.')
-    }
+	// Validação da Formação Acadêmica
+	if (record.academicBackground === '') {
+		errors['academicBackground'] = 'ok';
+	} else {
+		if(
+			isAlphaNumeric(
+				record.academicBackground, 'academicBackground', 'Formação-Academica'
+			)
+		) {
+			errors['academicBackground'] = 'ok';
+		}
+	}
 
-    return errors;
+		// Validação da Experiência Profissional
+		if (record.profissionalExperience === '') {
+			errors['profissionalExperience'] = 'ok';
+		} else {
+			if(
+				isAlphaNumeric(
+					record.profissionalExperience, 
+					'profissionalExperience', 
+					'Experiência Profissional'
+				)
+			) {
+				errors['profissionalExperience'] = 'ok';
+			}
+		}
 
+	// Validação do telefone 1
+	if (!isEmpty(record.firstPhone, 'firstPhone', 'Telefone-1')) {
+		if (isNumeric(record.firstPhone, 'firstPhone', 'Telefone-1')) {
+			if (
+				isValidLength(record.firstPhone, 10, 11, 'firstPhone', 'Telefone-1')
+			) {
+				errors['firstPhone'] = 'ok';
+			}
+		}
+	}
+
+	// Validação do telefone 2
+	if(record.secondPhone === ''){
+		errors['secondPhone'] = 'ok';
+	} else {
+		if (isNumeric(record.secondPhone, 'secondPhone', 'Telefone-2')) {
+			if (
+				isValidLength(record.secondPhone, 10, 11, 'secondPhone', 'Telefone-2')
+			) {
+				errors['secondPhone'] = 'ok';
+			}
+		}
+	}
+	
+	// Validação da rua
+	if (!isEmpty(record.street, 'street', 'Rua')) {
+		errors['street'] = 'ok';
+	}
+
+	// Validação do número da residência
+	if (!isEmpty(record.houseNumber, 'houseNumber', 'Número da residência')) {
+		errors['houseNumber'] = 'ok';
+	}
+
+	// Validação de Complemento
+	if (record.complement === '') {
+		errors['complement'] = 'ok';
+	} else {
+		if (isAlphaNumeric(record.complement, 'complement', 'Complemento')) {
+			errors['complement'] = 'ok';
+		}
+	}
+
+	// Validação do bairro
+	if (!isEmpty(record.neighborhood, 'neighborhood', 'Bairro')) {
+		errors['neighborhood'] = 'ok'
+	}
+
+	// Validação da cidade
+	if (!isEmpty(record.city, 'city', 'Cidade')) {
+		errors['city'] = 'ok';
+	}
+
+	// Validação da RPM de Origem
+	if (record.rpmOrigin === '') {
+		errors['rpmOrigin'] = 'ok';
+	} else {
+		if (isAlphaNumeric(record.rpmOrigin, 'rpmOrigin', 'RPM de Origem')) {
+			errors['rpmOrigin'] = 'ok';
+		}
+	}
+
+	// Validação da Unidade de Origem
+	if (record.unitOrigin === '') {
+		errors['unitOrigin'] = 'ok';
+	} else {
+		if (
+			isAlphaNumeric(
+				record.unitOrigin, 
+				'unitOrigin', 
+				'Unidade de Origem'
+			)
+		) {
+			errors['unitOrigin'] = 'ok';
+		}
+	}
+	// Validação da Companhia de Origem
+	if (record.companyOrigin === '') {
+		errors['companyOrigin'] = 'ok';
+	} else {
+		if (
+			isAlphaNumeric(
+				record.companyOrigin, 
+				'companyOrigin', 
+				'Companhia de Origem'
+			)
+		) {
+			errors['companyOrigin'] = 'ok';
+		}
+	}
+
+	return errors;
+	
 }
 
 module.exports = {
-    validateCsvRecord
+  validateCsvRecord
 };
 

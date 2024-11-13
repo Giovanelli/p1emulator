@@ -6,7 +6,7 @@ function initializeDatabase() {
   database.exec(`
     CREATE TABLE IF NOT EXISTS military (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      militaryNumber INTEGER UNIQUE NOT NULL,
+      militaryNumber TEXT UNIQUE NOT NULL,
       functionalName TEXT UNIQUE NOT NULL,
       name TEXT NOT NULL,
       rank TEXT NOT NULL,
@@ -32,7 +32,8 @@ function initializeDatabase() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       classroomNumber INTEGER UNIQUE NOT NULL,
       numberOfMilitary INTEGER DEFAULT 0,
-      monitor TEXT
+      monitor TEXT,
+      observation TEXT
     )
   `);
 

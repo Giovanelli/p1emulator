@@ -41,7 +41,7 @@ function getClassroomByMilitaryId(militaryId) {
 }
 
 // Função para atualizar um registro na tabela classroom_military
-function updateClassroomMilitaryData( militaryId, data) {
+function updateClassroomMilitaryData(militaryId, data) {
   const stmt = database.prepare(`
     UPDATE classroomMilitary SET 
       classroomId = ?, 
@@ -57,12 +57,42 @@ function updateClassroomMilitaryData( militaryId, data) {
 }
 
 // Função para deletar um registro da tabela classroom_military
-function deleteClassroomMilitaryData(classroomId, militaryId) {
-  const stmt = database.prepare(
-    'DELETE FROM classroomMilitary WHERE classroomId = ? AND militaryId = ?'
-  );
-  return stmt.run(classroomId, militaryId);
+// function deleteClassroomMilitaryData(classroomId, militaryId) {
+//   const stmt = database.prepare(
+//     'DELETE FROM classroomMilitary WHERE classroomId = ? AND militaryId = ?'
+//   );
+//   return stmt.run(classroomId, militaryId);
+// }
+
+function deleteClassroomMilitaryData(classroomId = null, militaryId = null) {
+  let query = 'DELETE FROM classroomMilitary WHERE';
+  const conditions = [];
+  const params = [];
+
+  if (classroomId !== null) {
+    conditions.push('classroomId = ?');
+    params.push(classroomId);
+  }
+
+  if (militaryId !== null) {
+    conditions.push('militaryId = ?');
+    params.push(militaryId);
+  }
+
+  // Se nenhuma condição foi adicionada, evitamos uma exclusão acidental sem filtro
+  if (conditions.length === 0) {
+    throw new Error(
+      'Pelo menos um dos parâmetros (classroomId ou militaryId)' + 
+      'deve ser fornecido'
+    );
+  }
+
+  query += ' ' + conditions.join(' AND ');
+  const stmt = database.prepare(query);
+  return stmt.run(...params);
 }
+
+
 
 module.exports = {
   addClassroomMilitaryData,

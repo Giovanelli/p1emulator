@@ -1,7 +1,10 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('api', {
-
+  // Funções passadas pelo preload
+  validateObject: (object) => ipcRenderer.invoke('validate-object', object),
+  validateObjectCsv: (object) => ipcRenderer.invoke('validate-object-csv', object),
+ 
   openMilitaryWindow: () => ipcRenderer.send('open-military-window'),
   openClassroomWindow: () => ipcRenderer.send('open-classroom-window'),
   openActivityWindow: () => ipcRenderer.send('open-activity-window'),
@@ -19,10 +22,9 @@ contextBridge.exposeInMainWorld('api', {
   openGenerateScale: () => ipcRenderer.send('open-generate-scale'),
   openSearchScale: () => ipcRenderer.send('open-search-scale'),
   
-  sendMilitaryData: (formData) => ipcRenderer.invoke(
-    'add-military-data', 
-    formData
-  ),
+  addMilitaryData: (militaryData) => {
+    return ipcRenderer.invoke('add-military-data', militaryData);
+  },
 
   addActivityData: async (formData) => {
     return await ipcRenderer.invoke('add-activity-data', formData)
@@ -101,8 +103,36 @@ contextBridge.exposeInMainWorld('api', {
     updateData
   ),
 
-  deleteMilitaryRecord: (id) => ipcRenderer.invoke(
-    'delete-military-record',
-    id
-  ),
+  deleteMilitaryRecord: (militaryInfo) => { 
+    ipcRenderer.invoke('delete-military-record', militaryInfo);
+  },
+
+  deleteClassroomRecord: (id) => {
+    return ipcRenderer.invoke('delete-classroom-record', id);
+  },
+
+
+  loadCsvData: (data) => {
+    return new Promise((resolve) => {
+      ipcRenderer.on('display-csv-list', (event, data) => resolve(data));
+    });
+  },
+
+  correctionWindowCsv: (data) => {
+    ipcRenderer.send('window-csv-record', data);
+  },
+
+  loadCsvRecord: () => {
+    return new Promise((resolve) => {
+      ipcRenderer.on('load-csv-record', (event, data) => 
+        resolve(data))
+    });
+  },
+
+  send: (channel, data) => ipcRenderer.send(channel, data),
+
+  getStoredCsvData: () => {
+    return ipcRenderer.invoke('get-stored-csv-data');
+  }
+
 });

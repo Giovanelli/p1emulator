@@ -1,7 +1,6 @@
 // inputRestriction.js
 export function updateInputRestriction(inputSearch, ...radios) {
   // Aplica as restrições com base nos rádios recebidos
-  console.log(radios)
   radios.forEach(radio => {
     if (radio.checked) {
       inputSearch.disabled = false;

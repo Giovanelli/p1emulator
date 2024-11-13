@@ -8,13 +8,6 @@ const roleMapping = {
   "auxiliar_p4": "Auxiliar de P4"
 };
 
-// teste
-const formSearch = document.querySelector('#form-search');
-const accordionButton = document.querySelector('.accordion-button');
-const inputSearch = document.querySelector('#input-search');
-const radios = document.querySelectorAll('input[name="options"');
-const radioChecked = document.querySelector('input[name="options"]:checked');
-
 // Vefiricar em quantos arquivos eu tenho a chamada dessa função.
 async function populateClassroomSelect() {
   try {
@@ -121,10 +114,9 @@ function updatePaginationControls(page, totalItems) {
 }
 
 function clearSelectRadio() {
-  // const selectedRadio = document.querySelector('input[name="options"]:checked');
-  //const radioButtons = document.querySelectorAll('input[name="options"]');
-  //const inputSearch = document.querySelector('#input-search')
+  const radios = document.querySelectorAll('input[name="options"]');
   const collapseOne = document.querySelector('#collapseOne');
+  const inputSearch = document.querySelector('#input-search');
 
   const advancedSearchFields = [
     document.querySelector('#rpm-origin'),
@@ -142,29 +134,35 @@ function clearSelectRadio() {
       radio.checked = false;
     });
     advancedSearchFields.forEach(field => {
-      field.value = ''; // Limpa o campo
+      field.value = ''; // Limpa os campos avançados
     });
     inputSearch.disabled = disable;
+    inputSearch.value = ''; // Limpa o campo de pesquisa simples
   }
 
-  collapseOne.addEventListener('shown.bs.collapse', () => { 
-    toggleElements(true);
-  });
-  collapseOne.addEventListener('hidden.bs.collapse', () => {
-    toggleElements(false);
-  });
+  // Certifique-se de que os listeners não são adicionados múltiplas vezes
+  if (!collapseOne.hasAttribute('data-listener')) {
+    collapseOne.addEventListener('shown.bs.collapse', () => { 
+      toggleElements(true);
+      inputSearch.disabled = true;
+    });
+    collapseOne.addEventListener('hidden.bs.collapse', () => {
+      toggleElements(false);
+      inputSearch.disabled = true;
+    });
+    collapseOne.setAttribute('data-listener', 'true');
+  }
+}
 
-  if (radioChecked) { radioChecked.checked = false; }
-  inputSearch.value = '';
-};
 
 async function handleFormSubmit(event) {
   event.preventDefault();
 
-  //const radio = document.querySelector('input[name="options"]:checked');
-  //const inputSearch = document.querySelector('#input-search').value;
-
-  if (radioChecked && inputSearch.trim() !== '') {
+  const radioChecked = document.querySelector('input[name="options"]:checked');
+  const inputSearch = 
+    document.querySelector('#input-search').value.toLowerCase().trim();
+  
+  if (radioChecked && inputSearch !== '') {
     //Aqui será feita a pesquisa simples
     let fieldSearch = radioChecked.id === 'radio-military-number' 
       ? 'militaryNumber' 
@@ -208,12 +206,13 @@ async function handleFormSubmit(event) {
   }
 };
 
-function init () {
+function init() {
   document.addEventListener('DOMContentLoaded', async () =>   {
-    // const formSearch = document.querySelector('#form-search');
-    // const accordionButton = document.querySelector('.accordion-button');
-    // const inputSearch = document.querySelector('#input-search');
-    // const radios = document.querySelectorAll('input[name="options"');
+    const formSearch = document.querySelector('#form-search');
+    const accordionButton = document.querySelector('.accordion-button');
+    const inputSearch = document.querySelector('#input-search');
+    const radios = document.querySelectorAll('input[name="options"');
+
 
     radios.forEach(radio => {
       radio.addEventListener('click', () => {
@@ -221,31 +220,30 @@ function init () {
       });
     });
 
-    
-    accordionButton.addEventListener('click', clearSelectRadio);
-
     await populateClassroomSelect();
+
     
+
     formSearch.addEventListener('submit', handleFormSubmit);
+
+    accordionButton.addEventListener('click', clearSelectRadio);
 
     document.querySelector('#btn-refresh').addEventListener(
       'click', 
       async () => await populateTable(currentPage)
     );
-
-    //Add pagination events
     document.querySelector('#prevButton').addEventListener('click', () => {
       if (currentPage > 1) {
         currentPage--;
         populateTable(currentPage);
       }
-    })
+    });
     document.querySelector('#nextButton').addEventListener('click', () => {
       currentPage++;
       populateTable(currentPage);
-    })
+    });
 
-  })
-};
+  });
+}
 
 init();

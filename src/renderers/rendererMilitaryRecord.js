@@ -1,10 +1,25 @@
-const fieldIds = [
-  'classroom-number', 'military-number', 'functional-name', 'name', 'rank',
-  'role', 'driver-licence', 'academic-background', 'profissional-experience',
-  'first-phone', 'second-phone', 'street', 'house-number', 'complement',
-  'neighborhood', 'city', 'rpm-origin', 'unit-origin', 'company-origin',
-  'observation'
-]
+const fields = [
+  { id: 'classroom-number', name: 'classroomNumber' },
+  { id: 'military-number', name: 'militaryNumber' },
+  { id: 'functional-name', name: 'functionalName' },
+  { id: 'name', name: 'name' },
+  { id: 'rank', name: 'rank' },
+  { id: 'role', name: 'role' },
+  { id: 'driver-licence', name: 'driverLicence' },
+  { id: 'academic-background', name: 'academicBackground' },
+  { id: 'profissional-experience', name: 'profissionalExperience' },
+  { id: 'first-phone', name: 'firstPhone' },
+  { id: 'second-phone', name: 'secondPhone' },
+  { id: 'street', name: 'street' },
+  { id: 'house-number', name: 'houseNumber' },
+  { id: 'complement', name: 'complement' },
+  { id: 'neighborhood', name: 'neighborhood' },
+  { id: 'city', name: 'city' },
+  { id: 'rpm-origin', name: 'rpmOrigin' },
+  { id: 'unit-origin', name: 'unitOrigin' },
+  { id: 'company-origin', name: 'companyOrigin' },
+  { id: 'observation', name: 'observation' }
+];
 
 let isEditing = false
 
@@ -29,146 +44,158 @@ async function loadMilitaryData() {
   return new Promise((resolve, reject) => {
     try {
       window.api.loadMilitaryData((militaryInfo) => {
-  
-        const { id, data } = militaryInfo
-  
-        document.getElementById('classroom-number').value = 
-          data.classroomNumber;
-        document.getElementById('military-number').value = data.militaryNumber;
-        document.getElementById('functional-name').value = data.functionalName;
-        document.getElementById('name').value = data.name;
-        document.getElementById('rank').value = data.rank;
-        document.getElementById('first-phone').value = data.firstPhone;
-        document.getElementById('second-phone').value = data.secondPhone;
-        document.getElementById('street').value = data.street;
-        document.getElementById('house-number').value = data.houseNumber;
-        document.getElementById('complement').value = data.complement;
-        document.getElementById('neighborhood').value = data.neighborhood;
-        document.getElementById('city').value = data.city;
-        document.getElementById('rpm-origin').value = data.rpmOrigin;
-        document.getElementById('unit-origin').value = data.unitOrigin;
-        document.getElementById('company-origin').value = data.companyOrigin;
-        document.getElementById('role').value = data.role
-        document.getElementById('observation').value = data.observation
-        document.getElementById('driver-licence').value = data.driverLicence
-        document.getElementById('profissional-experience').value = 
-          data.profissionalExperience
-        document.getElementById('academic-background').value = 
-          data.academicBackground
-  
-        resolve({id: id, data: data})
+        if (!militaryInfo || !militaryInfo.data) {
+          console.error('Dados de militar não encontrados');
+          return reject('Dados de militar ausentes');
+        }
+
+        // Preencher dados no formulário usando o array fields
+        fields.forEach(field => {
+          const element = document.getElementById(field.id);
+          if (element) {
+            // Definir valor padrão vazio
+            element.value = militaryInfo.data[field.name] || ''; 
+          } else {
+            console.warn(`Elemento com ID "${field.id}" não encontrado no DOM.`);
+          }
+        });
+
+        resolve({ id: militaryInfo.id, data: militaryInfo.data });
       });
     } catch (error) {
-      console.error('Erro ao carregar os dados do militar: ', error);
-      reject(error)
+      console.error('Erro ao carregar os dados do militar:', error);
+      reject(error);
     }
-  })
+  });
 }
 
+
 function enableFields() {
-  fieldIds.forEach(id => {
-    document.getElementById(id).disabled = false;
+  fields.forEach(field => {
+    document.getElementById(field.id).disabled = false;
   });
 }
 
 function disabledFields() {
-  fieldIds.forEach(id => {
-    document.getElementById(id).disabled = true;
+  fields.forEach(field => {
+    document.getElementById(field.id).disabled = true;
   });
+}
+
+
+async function handleEdit(militaryInfo, btnEdit, btnDelete) {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  if (!isEditing) {
+    setEditingMode(true, btnEdit, btnDelete);
+  } else {
+    const updateData = gatherFormData();
+    
+    try {
+      await window.api.updateMilitaryData(militaryInfo.id, updateData);
+      await window.api.showDialogActivity({
+        type: 'info',
+        buttons: ['Ok'],
+        message: 'Dados atualizados com sucesso!'
+      });
+      setEditingMode(false, btnEdit, btnDelete);
+    } catch (error) {
+      console.error('Erro ao atualizar dados: ', error);
+      await window.api.showDialogActivity({
+        type: 'warning',
+        buttons: ['Ok'],
+        message: 'Erro ao atualizar os dados!'
+      });
+      btnEdit.disabled = false;
+    }
+  }
+}
+
+async function handleDelete(militaryInfo) {
+  const confirmDelete = await window.api.showDialogActivity({
+    type: 'warning',
+    buttons: ['Sim', 'Não'],
+    title: 'Deleção de Registro',
+    message: 'Tem certeza que deseja excluir o militar?'
+  });
+
+  if (confirmDelete === 0) {
+    try {
+      await window.api.deleteMilitaryRecord(militaryInfo);
+      await window.api.showDialogActivity({
+        type: 'info',
+        buttons: ['Ok'],
+        message: 'Militar deletado com sucesso!'
+      });
+      window.close();
+    } catch (error) {
+      console.error('Erro ao deletar o militar: ', error);
+      await window.api.showDialogActivity({
+        type: 'info',
+        buttons: ['Ok'],
+        message: 'Erro ao deletar o militar.'
+      });
+    }
+  }
+}
+
+
+function setEditingMode(isEditingMode, btnEdit, btnDelete) {
+  const header = document.querySelector('#header');
+  if (header) {
+    header.textContent = isEditingMode ? 'Editar Militar' : 'Registro Militar';
+  } 
+  
+  isEditingMode ? enableFields() : disabledFields();
+  
+  btnEdit.textContent = isEditingMode ? 'Salvar' : 'Editar';
+  btnDelete.style.display = isEditingMode ? 'none' : 'inline';
+  document.title = isEditingMode ? 'Editar Militar' : 'Registro Militar';
+
+  isEditing = isEditingMode;
+}
+
+function gatherFormData() {
+  const data = {};
+  fields.forEach(field => {
+    const element = document.getElementById(field.id);
+    if (element) {
+      data[field.name] = element.value.trim() || ''; // Valor padrão vazio e remoção de espaços
+    } else {
+      console.warn(`Elemento com ID "${field.id}" não encontrado no DOM.`);
+    }
+  });
+  return data;
 }
 
 function init() {
   document.addEventListener('DOMContentLoaded', async () => {
-    
-    await populateClassroomSelect();
-    const militaryInfo = await loadMilitaryData();
+    try {
+      await populateClassroomSelect();
+      const militaryInfo = await loadMilitaryData();
 
-    const btnEdit = document.querySelector('#btn-edit')
-    const btnDelete = document.querySelector('#btn-delete')
+      const btnEdit = document.querySelector('#btn-edit');
+      const btnDelete = document.querySelector('#btn-delete');
 
-    btnEdit.addEventListener('click', async () => {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      })
+      btnEdit.addEventListener('click', () => { 
+        handleEdit(militaryInfo, btnEdit, btnDelete)
+      });
 
-      if (!isEditing) {
-        document.querySelector('#header').innerHTML = 'Editar Militar'
-        enableFields()
-        btnEdit.innerHTML = 'Salvar'
-        btnDelete.style.display = 'none'
-        document.title = 'Editar Militar'
-        isEditing = true
-      } else {
-        document.querySelector('#header').innerHTML = 'Registro Militar'
+      btnDelete.addEventListener('click', () => handleDelete(militaryInfo));
 
-        const updateData = {
-          classroomNumber: document.getElementById('classroom-number').value,
-          militaryNumber: document.getElementById('military-number').value,
-          functionalName: document.getElementById('functional-name').value,
-          name: document.getElementById('name').value,
-          rank: document.getElementById('rank').value,
-          firstPhone: document.getElementById('first-phone').value,
-          secondPhone: document.getElementById('second-phone').value,
-          street: document.getElementById('street').value,
-          houseNumber: document.getElementById('house-number').value,
-          complement: document.getElementById('complement').value,
-          neighborhood: document.getElementById('neighborhood').value,
-          city: document.getElementById('city').value,
-          rpmOrigin: document.getElementById('rpm-origin').value,
-          unitOrigin: document.getElementById('unit-origin').value,
-          companyOrigin: document.getElementById('company-origin').value,
-          role: document.getElementById('role').value,
-          driverLicence: document.querySelector('#driver-licence').value,
-          profissionalExperience: 
-            document.querySelector('#profissional-experience').value,
-          academicBackground: 
-            document.querySelector('#academic-background').value,
-          observation: document.getElementById('observation').value
-        }
+    } catch (error) {
+      console.error('Erro ao inicializar a página: ', error);
+      await window.api.showDialogActivity({
+        type: 'info',
+        buttons: ['Ok'],
+        message: 'Erro ao carregar os dados do registro.'
+      });
+    }
 
-        try {
-          btnEdit.disabled = true
-          await window.api.updateMilitaryData(militaryInfo.id, updateData);
-          //alert('Dados atualizados com sucesso!')
-        } catch (error) {
-          console.error('Erro ao atualizar dados: ', error)
-          alert('Erro ao atualizar os dados.')
-        } finally {
-          btnEdit.innerHTML = 'Editar'
-          btnDelete.style.display = 'inline'
-          document.title = 'Registro Militar'
-          isEditing = false
-          btnEdit.disabled = false
-        }
-
-        // disabledFields()
-        // btnEdit.innerHTML = 'Editar'
-        // btnDelete.style.display = 'inline'
-        // document.title = 'Registro Militar'   
-        // isEditing = false
-      }
-      
-    })
-
-    btnDelete.addEventListener('click', async () => {
-      const confirmDelete = 
-        confirm('Tem certeza que deseja excluir este militar?')
-      if (confirmDelete){
-        try {
-          await window.api.deleteMilitaryRecord(militaryInfo.id)
-          alert('Militar excluído com sucesso!')
-        } catch (error) {
-          console.error('Erro ao deletar o militar: ', error)
-          alert('Erro ao deletar o militar')
-        }
-      }
-    })
-
-
-  })
+    console.log(gatherFormData());
+  });
 }
 
-init()
+init();
 
 

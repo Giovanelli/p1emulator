@@ -1,3 +1,56 @@
+const fields = [
+  { id: 'classroom-number', name: 'classroomNumber' },
+  { id: 'military-number', name: 'militaryNumber' },
+  { id: 'functional-name', name: 'functionalName' },
+  { id: 'name', name: 'name' },
+  { id: 'rank', name: 'rank' },
+  { id: 'role', name: 'role' },
+  { id: 'driver-licence', name: 'driverLicence' },
+  { id: 'academic-background', name: 'academicBackground' },
+  { id: 'profissional-experience', name: 'profissionalExperience' },
+  { id: 'first-phone', name: 'firstPhone' },
+  { id: 'second-phone', name: 'secondPhone' },
+  { id: 'street', name: 'street' },
+  { id: 'house-number', name: 'houseNumber' },
+  { id: 'complement', name: 'complement' },
+  { id: 'neighborhood', name: 'neighborhood' },
+  { id: 'city', name: 'city' },
+  { id: 'rpm-origin', name: 'rpmOrigin' },
+  { id: 'unit-origin', name: 'unitOrigin' },
+  { id: 'company-origin', name: 'companyOrigin' },
+];
+
+
+function normalizeText(text) {
+	return text.toLowerCase().trim();
+}
+
+function gatherFormData() {
+  const data = {};
+  fields.forEach(field => {
+    const element = document.getElementById(field.id);
+    if (element) {
+      switch(element.id) {
+        case (element.id === 'military-number'):
+          data[field.name] = element.value.trim() || '';
+          break;
+        case (element.id === 'first-phone'):
+          data[field.name] = element.value.trim() || '';
+          break;
+        case (element.id === 'second-phone'):
+          data[field.name] = element.value.trim() || '';
+          break;
+        default:
+          data[field.name] = normalizeText(element.value) || '';
+          break;
+      }
+    } else {
+      console.warn(`Elemento com ID "${field.id}" não encontrado no DOM.`);
+    }
+  });
+  return data;
+}
+
 
 function loadClassroomOptions() {
   window.api.getOptionsClassroom().then((options) => {
@@ -15,48 +68,39 @@ function loadClassroomOptions() {
   });
 }
 
+
+
 function handleFormSubmit() {
   const form = document.querySelector('#form-add-military');
 
-  form.addEventListener('submit', (event) => {
+  form.addEventListener('submit', async (event) => {
     event.preventDefault()
 
-    const formData = {
-      classroomNumber: document.querySelector('#classroom-number').value,
-      militaryNumber: document.querySelector('#military-number').value,
-      functionalName: document.querySelector('#functional-name').value
-        .toLowerCase(),
-      name: document.querySelector('#name').value.toLowerCase(),
-      rank: document.querySelector('#rank').value,
-      role: document.querySelector('#role').value,
-      firstPhone: document.querySelector('#first-phone').value,
-      secondPhone: document.querySelector('#second-phone').value,
-      street: document.querySelector('#street').value.toLowerCase(),
-      houseNumber: document.querySelector('#house-number').value.toLowerCase(),
-      complement: document.querySelector('#complement').value.toLowerCase(),
-      neighborhood: document.querySelector('#neighborhood').value.toLowerCase(),
-      city: document.querySelector('#city').value.toLowerCase(),
-      rpmOrigin: document.querySelector('#rpm-origin').value.toLowerCase(),
-      unitOrigin: document.querySelector('#unit-origin').value.toLowerCase(),
-      companyOrigin: document.querySelector('#company-origin').value
-        .toLowerCase(),
-      driverLicence: document.querySelector('#driver-licence').value,
-      profissionalExperience: document.querySelector('#profissional-experience')
-        .value.toLowerCase(),
-      academicBackground: document.querySelector('#academic-background').value
-        .toLowerCase()
-    };
+    const formData = gatherFormData();
    
-    try {
-      window.api.sendMilitaryData(JSON.stringify(formData));
-      alert('Militar cadastrado com sucesso!');
-      const continueAdd = confirm('Continuar Cadastrando?');
-      if (!continueAdd) window.close();
+    const response =  await window.api.addMilitaryData(formData);
+    
+    if (response.available) {
+      const continueAdding = await window.api.showDialogActivity({
+        type: 'info',
+        buttons: ['Sim', 'Não'],
+        title: '[Sucesso] - Militar cadastrado com sucesso!',
+        message: 'Deseja continuar cadastrando?'
+      });
 
-    } catch (error) {
-      console.error('Erro ao cadastrar militar: ', error);
-      alert('Erro ao cadastrar militar.');
-    }
+      if (continueAdding === 0) {
+        form.reset();
+      } else {
+        window.close();
+      }
+    } else {
+      await window.api.showDialogActivity({
+        type: 'error',
+        buttons: ['Ok'],
+        title: response.error,
+        message: response.message
+      });
+    }    
   });
 }
 

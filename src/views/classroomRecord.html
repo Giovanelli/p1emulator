@@ -15,7 +15,7 @@
   <title>Registro de Turma</title>
   <link rel="stylesheet" href="../public/css/bootstrap.min.css">
   <link rel="stylesheet" href="../public/css/classroomRecord.css">
-  <link rel="stylesheet" href="../public/bootstrap-icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="../public/icons/bootstrap-icons.css">
 </head>
 <body>
   <div class="container-fluid p-3 vh-100">
@@ -122,13 +122,19 @@
           </div>
         </div>
         
-        <div class="card-footer text-center">
-          <button type="button" class="btn btn-secondary" id="btn-edit">
-            Editar
-          </button>
-          <button type="button" class="btn btn-danger" id="btn-delete">
-            Deletar
-          </button>
+        <div class="card-footer d-flex flex-row">
+          <div class="col-7 d-flex justify-content-end gap-1 pe-3">
+            <button class="btn btn-secondary" id="prevButton" disabled></button>
+            <button class="btn btn-secondary" id="nextButton"></button>
+          </div>
+          <div class="col-5 d-flex justify-content-end gap-1">
+            <button type="button" class="btn btn-secondary" id="btn-edit">
+              Editar
+            </button>
+            <button type="button" class="btn btn-danger" id="btn-delete">
+              Deletar
+            </button>
+          </div>
         </div>
       </div> 
     </form>
